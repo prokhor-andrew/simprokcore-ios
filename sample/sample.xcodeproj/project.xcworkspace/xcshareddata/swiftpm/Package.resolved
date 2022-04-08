@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "simprokcore",
+        "repositoryURL": "https://github.com/simprok-dev/simprokcore-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "81b389f7b82cbe93ed1630387d4751bfe3a58fdb",
+          "version": "1.1.1"
+        }
+      },
+      {
+        "package": "simprokmachine",
+        "repositoryURL": "https://github.com/simprok-dev/simprokmachine-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "136576e5db5055b1cf7b362b0141a55f5a778834",
+          "version": "1.1.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
