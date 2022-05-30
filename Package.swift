@@ -5,7 +5,6 @@ import PackageDescription
 
 let package = Package(
     name: "simprokcore",
-    platforms: [.iOS(.v11)],
     products: [
         .library(
             name: "simprokcore",
@@ -16,7 +15,7 @@ let package = Package(
         .package(
             name: "simprokmachine",
             url: "https://github.com/simprok-dev/simprokmachine-ios.git",
-            .exactItem(.init(1, 1, 1))
+            .exactItem(.init(1, 1, 2))
         )
     ],
     targets: [
