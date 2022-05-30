@@ -13,9 +13,6 @@ public struct Layer<GlobalEvent, GlobalState> {
 
     internal let machine: Machine<StateAction<GlobalEvent, GlobalState>, StateAction<GlobalEvent, GlobalState>>
 
-    /// - parameter machine: Layer's machine that receives the result of `stateMapper` method and emits event objects that are sent into `eventMApper` method.
-    /// - parameter stateMapper: Triggered every time the global state is changed.
-    /// - parameter eventMApper: Triggered every time the machine sends an output event.
     public init<State, Event>(
         _ machine: Machine<State, Event>,
         stateMapper: @escaping Mapper<GlobalState, State>,
@@ -32,9 +29,6 @@ public struct Layer<GlobalEvent, GlobalState> {
         .outward { event in .set(.stateWillUpdate(eventMapper(event))) }
     }
 
-    /// - parameter machine: A function that returns a machine that receives the result of `stateMapper` method and emits event objects that are sent into `eventMapper` method.
-    /// - parameter stateMapper: Triggered every time the global state is changed.
-    /// - parameter eventMapper: Triggered every time the machine sends an output event.
     public init<State, Event>(
         _ machine: Supplier<Machine<State, Event>>,
         stateMapper: @escaping Mapper<GlobalState, State>,
@@ -43,7 +37,6 @@ public struct Layer<GlobalEvent, GlobalState> {
         self.init(machine(), stateMapper: stateMapper, eventMapper: eventMapper)
     }
 
-    /// - parameter layerType: a `LayerType` object used for creating an instance.
     public init<L: LayerType>(_ layerType: L) where L.GlobalState == GlobalState, L.GlobalEvent == GlobalEvent {
         self.init(
             layerType.machine,
@@ -52,13 +45,10 @@ public struct Layer<GlobalEvent, GlobalState> {
         )
     }
 
-    /// - parameter layerType: a function that returns a `LayerType` object used for creating an instance.
     public init<L: LayerType>(_ layerType: Supplier<L>) where L.GlobalState == GlobalState, L.GlobalEvent == GlobalEvent {
         self.init(layerType())
     }
 
-    /// - parameter machine: Layer's machine that receives the result of `mapper` method and *does not* emit event objects.
-    /// - parameter mapper: Triggered every time the global state is changed.
     public init<State, Event>(
         _ machine: Machine<State, Event>,
         mapper: @escaping Mapper<GlobalState, State>
@@ -73,8 +63,6 @@ public struct Layer<GlobalEvent, GlobalState> {
         }
     }
 
-    /// - parameter machine: A function that returns a machine that receives the result of `mapper` method and *does not* emit event objects.
-    /// - parameter mapper: Triggered every time the global state is changed.
     public init<State, Event>(
         _ machine: Supplier<Machine<State, Event>>,
         mapper: @escaping Mapper<GlobalState, State>
@@ -82,7 +70,6 @@ public struct Layer<GlobalEvent, GlobalState> {
         self.init(machine(), mapper: mapper)
     }
 
-    /// - parameter layerType: a `ConsumerLayer` object used for creating an instance.
     public init<C: ConsumerLayer>(_ layerType: C) where C.GlobalState == GlobalState {
         self.init(
             layerType.machine,
@@ -90,14 +77,10 @@ public struct Layer<GlobalEvent, GlobalState> {
         )
     }
 
-    /// - parameter layerType: a function that returns a `ConsumerLayer` object used for creating an instance.
     public init<C: ConsumerLayer>(_ layerType: Supplier<C>) where C.GlobalState == GlobalState {
         self.init(layerType())
     }
 
-
-    /// - parameter machine: Layer's machine that emits event objects that are sent into `mapper` method and *does not* receive state as input.
-    /// - parameter mapper: Triggered every time the machine sends an output event.
     public init<Event, State>(
         _ machine: Machine<State, Event>,
         mapper: @escaping Mapper<Event, GlobalEvent>
@@ -107,8 +90,6 @@ public struct Layer<GlobalEvent, GlobalState> {
         }
     }
 
-    /// - parameter machine: A function that returns a machine that emits event objects that are sent into `mapper` method and *does not* receive state as input.
-    /// - parameter mapper: Triggered every time the machine sends an output event.
     public init<Event, State>(
         _ machine: Supplier<Machine<State, Event>>,
         mapper: @escaping Mapper<Event, GlobalEvent>
@@ -116,17 +97,14 @@ public struct Layer<GlobalEvent, GlobalState> {
         self.init(machine(), mapper: mapper)
     }
 
-    /// - parameter layerType: a `ProducerLayer` object used for creating an instance.
     public init<P: ProducerLayer>(_ layerType: P) where P.GlobalEvent == GlobalEvent {
         self.init(layerType.machine, mapper: layerType.map(event:))
     }
 
-    /// - parameter layerType: a function that returns a `ProducerLayer` object used for creating an instance.
     public init<P: ProducerLayer>(_ layerType: Supplier<P>) where P.GlobalEvent == GlobalEvent {
         self.init(layerType())
     }
-    
-    
+        
     public init<Event>(
         _ machine: Machine<GlobalState, Event>,
         mapper: @escaping Mapper<Event, GlobalEvent>

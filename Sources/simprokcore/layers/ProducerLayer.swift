@@ -9,14 +9,14 @@ import simprokmachine
 
 
 /// A general protocol that describes a type that represents a layer object that does not consume state.
-/// Contains a machine that *does not* receive mapped layer state as input and emits output that is reduced into application's state.
+/// Contains a machine that *does not* receive mapped layer state as input and emits output.
 public protocol ProducerLayer {
     associatedtype GlobalEvent
     associatedtype GlobalState
     associatedtype Event
     associatedtype State
     
-    /// A machine that *does not* receive mapped state as input and emits output that is reduced into application's state.
+    /// A machine that *does not* receive mapped state as input and emits output.
     var machine: Machine<State, Event> { get }
     
     /// A mapper that maps layer's event into application's event and sends it into the global reducer

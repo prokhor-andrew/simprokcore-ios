@@ -9,14 +9,14 @@ import simprokmachine
 
 
 /// A general protocol that describes a type that represents a layer object.
-/// Contains a machine that receives mapped layer state as input and emits output that is reduced into application's state.
+/// Contains a machine that receives mapped layer state as input and emits output.
 public protocol LayerType {
     associatedtype GlobalState
     associatedtype GlobalEvent
     associatedtype State
     associatedtype Event
     
-    /// A machine that receives mapped state as input and emits output that is reduced into application's state.
+    /// A machine that receives mapped state as input and emits output that.
     var machine: Machine<State, Event> { get }
 
     /// A mapper that maps application's state into layer state and sends it into machine as input.

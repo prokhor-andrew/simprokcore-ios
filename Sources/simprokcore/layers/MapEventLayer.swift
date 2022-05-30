@@ -8,12 +8,14 @@
 import simprokmachine
 
 
+/// A general protocol that describes a type that represents a layer object.
+/// Contains a machine that receives global state as input and emits output.
 public protocol MapEventLayer {
     associatedtype GlobalState
     associatedtype GlobalEvent
     associatedtype Event
     
-    /// A machine that receives mapped state as input and emits output that is reduced into application's state.
+    /// A machine that receives mapped state as input and emits output.
     var machine: Machine<GlobalState, Event> { get }
     
     /// A mapper that maps layer's event into application's event and sends it into the global reducer
