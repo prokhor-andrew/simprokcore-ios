@@ -12,7 +12,6 @@ import simprokmachine
 /// Contains a machine that *does not* receive mapped layer state as input and emits output.
 public protocol ProducerLayer {
     associatedtype GlobalEvent
-    associatedtype GlobalState
     associatedtype Event
     associatedtype State
     
@@ -27,7 +26,7 @@ public protocol ProducerLayer {
 public extension ProducerLayer {
     
     /// An equivalent to Layer(self)
-    var layer: Layer<GlobalEvent, GlobalState> {
+    func layer<GlobalState>() -> Layer<GlobalEvent, GlobalState> {
         Layer(self)
     }
 }
@@ -36,7 +35,7 @@ public extension ProducerLayer {
 public extension ProducerLayer {
     
     /// An equivalent to Layer(self)
-    prefix static func ~(operand: Self) -> Layer<GlobalEvent, GlobalState> {
-        operand.layer
+    prefix static func ~<GlobalState>(operand: Self) -> Layer<GlobalEvent, GlobalState> {
+        operand.layer()
     }
 }

@@ -11,7 +11,6 @@ import simprokmachine
 /// A general protocol that describes a type that represents a layer object that does not produce events.
 /// Contains a machine that receives mapped layer state as input and *does not* emit output.
 public protocol ConsumerLayer {
-    associatedtype GlobalEvent
     associatedtype GlobalState
     associatedtype Event
     associatedtype State
@@ -27,7 +26,7 @@ public protocol ConsumerLayer {
 public extension ConsumerLayer {
     
     /// An equivalent to Layer(self)
-    var layer: Layer<GlobalEvent, GlobalState> {
+    func layer<GlobalEvent>() -> Layer<GlobalEvent, GlobalState> {
         Layer(self)
     }
 }
@@ -36,7 +35,7 @@ public extension ConsumerLayer {
 public extension ConsumerLayer {
     
     /// An equivalent to Layer(self)
-    prefix static func ~(operand: Self) -> Layer<GlobalEvent, GlobalState> {
-        operand.layer
+    prefix static func ~<GlobalEvent>(operand: Self) -> Layer<GlobalEvent, GlobalState> {
+        operand.layer()
     }
 }
