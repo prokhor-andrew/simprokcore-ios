@@ -31,11 +31,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 extension AppDelegate: Core {
+    typealias Event = AppEvent
     typealias State = AppState
     
-    var layers: [Layer<AppState>] {[
+    var layers: [Layer<AppEvent, AppState>] {[
         ~UILayer(),
         Layer(StorageLayer()),
-        LoggerLayer().layer
+        LoggerLayer().layer()
     ]}
+    
+    func reduce(state: AppState?, event: AppEvent) -> ReducerResult<AppState> {
+        switch event {
+        case .click:
+            if let state = state {
+                return .set(.init(state.value + 1))
+            } else {
+                return .skip
+            }
+        case .storage(let value):
+            return .set(.init(value))
+        }
+    }
 }

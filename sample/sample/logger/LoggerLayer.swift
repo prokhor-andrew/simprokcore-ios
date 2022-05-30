@@ -12,9 +12,7 @@ import simprokcore
 struct LoggerLayer: ConsumerLayer {
     
     var machine: Machine<String, Void> {
-        ~BasicMachine { input, callback in
-            print("\(input ?? "loading")")
-        }
+        ~LoggerMachine()
     }
     
     func map(state: AppState) -> String {

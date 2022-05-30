@@ -20,7 +20,7 @@ struct StorageLayer: LayerType {
         .init(state.value)
     }
     
-    func reduce(state: AppState?, event: StorageLayerEvent) -> ReducerResult<AppState> {
-        .set(.init(event.value))
+    func map(event: StorageLayerEvent) -> AppEvent {
+        .storage(event.value)
     }
 }

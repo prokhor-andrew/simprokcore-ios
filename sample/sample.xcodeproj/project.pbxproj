@@ -21,6 +21,8 @@
 		0767286727C1374800352314 /* UserDefaults+Machine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767286627C1374800352314 /* UserDefaults+Machine.swift */; };
 		0767286B27C13B1400352314 /* LoggerLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767286A27C13B1300352314 /* LoggerLayer.swift */; };
 		078F2BB527F75C7B005CACB4 /* StorageLayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078F2BB427F75C7B005CACB4 /* StorageLayerState.swift */; };
+		07B9CD7E2844F990009B4B2E /* AppEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B9CD7D2844F990009B4B2E /* AppEvent.swift */; };
+		07B9CD802844FA16009B4B2E /* LoggerMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B9CD7F2844FA16009B4B2E /* LoggerMachine.swift */; };
 		07CEB321280082D70065EE29 /* simprokcore in Frameworks */ = {isa = PBXBuildFile; productRef = 07CEB320280082D70065EE29 /* simprokcore */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,8 @@
 		0767286627C1374800352314 /* UserDefaults+Machine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Machine.swift"; sourceTree = "<group>"; };
 		0767286A27C13B1300352314 /* LoggerLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerLayer.swift; sourceTree = "<group>"; };
 		078F2BB427F75C7B005CACB4 /* StorageLayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageLayerState.swift; sourceTree = "<group>"; };
+		07B9CD7D2844F990009B4B2E /* AppEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEvent.swift; sourceTree = "<group>"; };
+		07B9CD7F2844FA16009B4B2E /* LoggerMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerMachine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +82,7 @@
 				0767285F27C136B600352314 /* storage */,
 				0767285E27C1368800352314 /* ui */,
 				0767285227C131E000352314 /* AppState.swift */,
+				07B9CD7D2844F990009B4B2E /* AppEvent.swift */,
 				0767283B27C1304600352314 /* AppDelegate.swift */,
 				0767284427C1304900352314 /* Assets.xcassets */,
 				0767284627C1304900352314 /* LaunchScreen.storyboard */,
@@ -113,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				0767286A27C13B1300352314 /* LoggerLayer.swift */,
+				07B9CD7F2844FA16009B4B2E /* LoggerMachine.swift */,
 			);
 			path = logger;
 			sourceTree = "<group>";
@@ -198,12 +204,14 @@
 				0767285627C1347400352314 /* MainViewController.swift in Sources */,
 				0767283C27C1304600352314 /* AppDelegate.swift in Sources */,
 				0767285927C1348F00352314 /* UILayer.swift in Sources */,
+				07B9CD802844FA16009B4B2E /* LoggerMachine.swift in Sources */,
 				0767285B27C134AB00352314 /* UILayerState.swift in Sources */,
 				0767285D27C134BF00352314 /* UILayerEvent.swift in Sources */,
 				0767286527C136EE00352314 /* StorageLayerEvent.swift in Sources */,
 				0767285327C131E000352314 /* AppState.swift in Sources */,
 				0767285727C1347400352314 /* UIWindow+Machine.swift in Sources */,
 				0767286127C136BF00352314 /* StorageLayer.swift in Sources */,
+				07B9CD7E2844F990009B4B2E /* AppEvent.swift in Sources */,
 				0767286727C1374800352314 /* UserDefaults+Machine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -423,7 +431,7 @@
 			repositoryURL = "https://github.com/simprok-dev/simprokcore-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 1.1.1;
+				version = 1.1.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

@@ -12,6 +12,7 @@ import UIKit
 
 struct UILayer: LayerType {
     typealias GlobalState = AppState
+    typealias GlobalEvent = AppEvent
     typealias State = UILayerState
     typealias Event = UILayerEvent
     
@@ -23,17 +24,10 @@ struct UILayer: LayerType {
         .init(text: "\(state.value)")
     }
     
-    func reduce(state: AppState?, event: UILayerEvent) -> ReducerResult<AppState> {
-        if let state = state {
-            switch event {
-            case .click:
-                return .set(.init(state.value + 1))
-            }
-        } else {
-            switch event {
-            case .click:
-                return .skip
-            }
+    func map(event: UILayerEvent) -> AppEvent {
+        switch event {
+        case .click:
+            return .click
         }
     }
 }
