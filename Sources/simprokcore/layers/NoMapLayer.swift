@@ -20,16 +20,16 @@ public protocol NoMapLayer {
 
 public extension NoMapLayer {
     
-    /// An equivalent to Layer(self)
+    /// An equivalent to Layer.nomap(self)
     var layer: Layer<GlobalEvent, GlobalState> {
-        Layer(self)
+        Layer.nomap(self)
     }
 }
 
 
 public extension NoMapLayer {
     
-    /// An equivalent to Layer(self)
+    /// An equivalent to Layer.nomap(self)
     prefix static func ~(operand: Self) -> Layer<GlobalEvent, GlobalState> {
         operand.layer
     }

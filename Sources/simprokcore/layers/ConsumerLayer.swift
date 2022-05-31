@@ -25,16 +25,16 @@ public protocol ConsumerLayer {
 
 public extension ConsumerLayer {
     
-    /// An equivalent to Layer(self)
+    /// An equivalent to Layer.consumer(self)
     func layer<GlobalEvent>() -> Layer<GlobalEvent, GlobalState> {
-        Layer(self)
+        Layer.consumer(self)
     }
 }
 
 
 public extension ConsumerLayer {
     
-    /// An equivalent to Layer(self)
+    /// An equivalent to Layer.consumer(self)
     prefix static func ~<GlobalEvent>(operand: Self) -> Layer<GlobalEvent, GlobalState> {
         operand.layer()
     }

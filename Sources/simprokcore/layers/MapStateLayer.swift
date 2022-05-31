@@ -25,16 +25,16 @@ public protocol MapStateLayer {
 
 public extension MapStateLayer {
     
-    /// An equivalent to Layer(self)
+    /// An equivalent to Layer.state(self)
     var layer: Layer<GlobalEvent, GlobalState> {
-        Layer(self)
+        Layer.state(self)
     }
 }
 
 
 public extension MapStateLayer {
     
-    /// An equivalent to Layer(self)
+    /// An equivalent to Layer.state(self)
     prefix static func ~(operand: Self) -> Layer<GlobalEvent, GlobalState> {
         operand.layer
     }

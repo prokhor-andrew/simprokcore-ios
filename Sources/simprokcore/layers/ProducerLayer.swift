@@ -25,16 +25,16 @@ public protocol ProducerLayer {
 
 public extension ProducerLayer {
     
-    /// An equivalent to Layer(self)
+    /// An equivalent to Layer.producer(self)
     func layer<GlobalState>() -> Layer<GlobalEvent, GlobalState> {
-        Layer(self)
+        Layer.producer(self)
     }
 }
 
 
 public extension ProducerLayer {
     
-    /// An equivalent to Layer(self)
+    /// An equivalent to Layer.producer(self)
     prefix static func ~<GlobalState>(operand: Self) -> Layer<GlobalEvent, GlobalState> {
         operand.layer()
     }

@@ -13,7 +13,7 @@ public struct Layer<GlobalEvent, GlobalState> {
 
     internal let machine: Machine<StateAction<GlobalEvent, GlobalState>, StateAction<GlobalEvent, GlobalState>>
 
-    public init<State, Event>(
+    private init<Event, State>(
         _ machine: Machine<State, Event>,
         stateMapper: @escaping Mapper<GlobalState, State>,
         eventMapper: @escaping Mapper<Event, GlobalEvent>
@@ -29,27 +29,7 @@ public struct Layer<GlobalEvent, GlobalState> {
         .outward { event in .set(.stateWillUpdate(eventMapper(event))) }
     }
 
-    public init<State, Event>(
-        _ machine: Supplier<Machine<State, Event>>,
-        stateMapper: @escaping Mapper<GlobalState, State>,
-        eventMapper: @escaping Mapper<Event, GlobalEvent>
-    ) {
-        self.init(machine(), stateMapper: stateMapper, eventMapper: eventMapper)
-    }
-
-    public init<L: LayerType>(_ layerType: L) where L.GlobalState == GlobalState, L.GlobalEvent == GlobalEvent {
-        self.init(
-            layerType.machine,
-            stateMapper: layerType.map(state:),
-            eventMapper: layerType.map(event:)
-        )
-    }
-
-    public init<L: LayerType>(_ layerType: Supplier<L>) where L.GlobalState == GlobalState, L.GlobalEvent == GlobalEvent {
-        self.init(layerType())
-    }
-
-    public init<State, Event>(
+    private init<Event, State>(
         _ machine: Machine<State, Event>,
         mapper: @escaping Mapper<GlobalState, State>
     ) {
@@ -62,26 +42,8 @@ public struct Layer<GlobalEvent, GlobalState> {
             }
         }
     }
-
-    public init<State, Event>(
-        _ machine: Supplier<Machine<State, Event>>,
-        mapper: @escaping Mapper<GlobalState, State>
-    ) {
-        self.init(machine(), mapper: mapper)
-    }
-
-    public init<C: ConsumerLayer>(_ layerType: C) where C.GlobalState == GlobalState {
-        self.init(
-            layerType.machine,
-            mapper: layerType.map(state:)
-        )
-    }
-
-    public init<C: ConsumerLayer>(_ layerType: Supplier<C>) where C.GlobalState == GlobalState {
-        self.init(layerType())
-    }
-
-    public init<Event, State>(
+    
+    private init<Event, State>(
         _ machine: Machine<State, Event>,
         mapper: @escaping Mapper<Event, GlobalEvent>
     ) {
@@ -89,23 +51,8 @@ public struct Layer<GlobalEvent, GlobalState> {
             .set(.stateWillUpdate(mapper($0)))
         }
     }
-
-    public init<Event, State>(
-        _ machine: Supplier<Machine<State, Event>>,
-        mapper: @escaping Mapper<Event, GlobalEvent>
-    ) {
-        self.init(machine(), mapper: mapper)
-    }
-
-    public init<P: ProducerLayer>(_ layerType: P) where P.GlobalEvent == GlobalEvent {
-        self.init(layerType.machine, mapper: layerType.map(event:))
-    }
-
-    public init<P: ProducerLayer>(_ layerType: Supplier<P>) where P.GlobalEvent == GlobalEvent {
-        self.init(layerType())
-    }
         
-    public init<Event>(
+    private init<Event>(
         _ machine: Machine<GlobalState, Event>,
         mapper: @escaping Mapper<Event, GlobalEvent>
     ) {
@@ -120,29 +67,7 @@ public struct Layer<GlobalEvent, GlobalState> {
         .outward { event in .set(.stateWillUpdate(mapper(event))) }
     }
     
-    public init<Event>(
-        _ machine: Supplier<Machine<GlobalState, Event>>,
-        mapper: @escaping Mapper<Event, GlobalEvent>
-    ) {
-        self.init(machine(), mapper: mapper)
-    }
-    
-    public init<L: MapEventLayer>(
-        _ layerType: L
-    ) where L.GlobalEvent == GlobalEvent {
-        self.init(
-            layerType.machine,
-            mapper: layerType.map(event:)
-        )
-    }
-    
-    public init<L: MapEventLayer>(
-        _ layerType: Supplier<L>
-    ) where L.GlobalEvent == GlobalEvent {
-        self.init(layerType())
-    }
-    
-    public init<State>(
+    private init<State>(
         _ machine: Machine<State, GlobalEvent>,
         mapper: @escaping Mapper<GlobalState, State>
     ) {
@@ -157,26 +82,7 @@ public struct Layer<GlobalEvent, GlobalState> {
         .outward { event in .set(.stateWillUpdate(event)) }
     }
     
-    public init<State>(
-        _ machine: Supplier<Machine<State, GlobalEvent>>,
-        mapper: @escaping Mapper<GlobalState, State>
-    ) {
-        self.init(machine(), mapper: mapper)
-    }
-    
-    public init<L: MapStateLayer>(
-        _ layerType: L
-    ) where L.GlobalState == GlobalState {
-        self.init(layerType.machine, mapper: layerType.map(state:))
-    }
-    
-    public init<L: MapStateLayer>(
-        _ layerType: Supplier<L>
-    ) where L.GlobalState == GlobalState {
-        self.init(layerType())
-    }
-    
-    public init(
+    private init(
         _ machine: Machine<GlobalState, GlobalEvent>
     ) {
         self.machine = machine.inward {
@@ -190,21 +96,245 @@ public struct Layer<GlobalEvent, GlobalState> {
         .outward { event in .set(.stateWillUpdate(event)) }
     }
     
-    public init(
-        _ machine: Supplier<Machine<GlobalState, GlobalEvent>>
-    ) {
-        self.init(machine())
+    
+    // MARK: LayerType constructors
+    
+    /// creates Layer object
+    /// - parameter machine - a machine that receives input state and produces events into global reducer
+    /// - parameter stateMapper - a state mapper
+    /// - parameter eventMapper - an event mapper
+    public static func layer<Event, State>(
+        _ machine: Machine<State, Event>,
+        stateMapper: @escaping Mapper<GlobalState, State>,
+        eventMapper: @escaping Mapper<Event, GlobalEvent>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        .init(machine, stateMapper: stateMapper, eventMapper: eventMapper)
     }
     
-    public init<L: NoMapLayer>(
+    /// creates Layer object
+    /// - parameter machine - a supplier that provides a machine that receives input state and produces events into global reducer
+    /// - parameter stateMapper - a state mapper
+    /// - parameter eventMapper - an event mapper
+    public static func layer<Event, State>(
+        _ machine: Supplier<Machine<State, Event>>,
+        stateMapper: @escaping Mapper<GlobalState, State>,
+        eventMapper: @escaping Mapper<Event, GlobalEvent>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        layer(machine(), stateMapper: stateMapper, eventMapper: eventMapper)
+    }
+    
+    /// creates Layer object
+    /// - parameter layerType - an object of type that represents a layer that receives state and produces events
+    public static func layer<L: LayerType>(
         _ layerType: L
-    ) where L.GlobalEvent == GlobalEvent, L.GlobalState == GlobalState {
-        self.init(layerType.machine)
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalState == GlobalState, L.GlobalEvent == GlobalEvent {
+        layer(layerType.machine, stateMapper: layerType.map(state:), eventMapper: layerType.map(event:))
     }
     
-    public init<L: NoMapLayer>(
+    /// creates Layer object
+    /// - parameter layerType - a supplier of an object of type that represents a layer that receives state and produces events
+    public static func layer<L: LayerType>(
         _ layerType: Supplier<L>
-    ) where L.GlobalEvent == GlobalEvent, L.GlobalState == GlobalState {
-        self.init(layerType())
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalState == GlobalState, L.GlobalEvent == GlobalEvent {
+        layer(layerType())
+    }
+    
+    // MARK: ConsumerLayer constructors
+    
+    /// creates Layer object
+    /// - parameter machine - a machine that receives input state and *does not* produce events into global reducer
+    /// - parameter mapper - a state mapper
+    public static func consumer<Event, State>(
+        _ machine: Machine<State, Event>,
+        mapper: @escaping Mapper<GlobalState, State>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        .init(machine, mapper: mapper)
+    }
+    
+    /// creates Layer object
+    /// - parameter machine - a supplier of a machine that receives input state and *does not* produce events into global reducer
+    /// - parameter mapper - a state mapper
+    public static func consumer<Event, State>(
+        _ machine: Supplier<Machine<State, Event>>,
+        mapper: @escaping Mapper<GlobalState, State>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        consumer(machine(), mapper: mapper)
+    }
+    
+    /// creates Layer object
+    /// - parameter layerType - an object of type that represents a layer that receives state and *does not* produce events
+    public static func consumer<L: ConsumerLayer>(
+        _ layerType: L
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalState == GlobalState {
+        consumer(layerType.machine, mapper: layerType.map(state:))
+    }
+    
+    /// creates Layer object
+    /// - parameter layerType - a supplier of an object of type that represents a layer that receives state and *does not* produce events
+    public static func consumer<L: ConsumerLayer>(
+        _ layerType: Supplier<L>
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalState == GlobalState {
+        consumer(layerType())
+    }
+    
+    // MARK: ProducerLayer constructors
+    
+    /// creates Layer object
+    /// - parameter machine - a machine that *does not* receive input state and produces events into global reducer
+    /// - parameter mapper - an event mapper
+    public static func producer<Event, State>(
+        _ machine: Machine<State, Event>,
+        mapper: @escaping Mapper<Event, GlobalEvent>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        .init(machine, mapper: mapper)
+    }
+    
+    /// creates Layer object
+    /// - parameter machine - a supplier of a machine that *does not* receive input state and produces events into global reducer
+    /// - parameter mapper - an event mapper
+    public static func producer<Event, State>(
+        _ machine: Supplier<Machine<State, Event>>,
+        mapper: @escaping Mapper<Event, GlobalEvent>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        producer(machine(), mapper: mapper)
+    }
+
+    /// creates Layer object
+    /// - parameter layerType - an object of type that represents a layer that *does not* receive state and produces events
+    public static func producer<L: ProducerLayer>(
+        _ layerType: L
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalEvent == GlobalEvent {
+        producer(layerType.machine, mapper: layerType.map(event:))
+    }
+
+    /// creates Layer object
+    /// - parameter layerType - a supplier of an object of type that represents a layer that *does not* receive state and produces events
+    public static func producer<L: ProducerLayer>(
+        _ layerType: Supplier<L>
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalEvent == GlobalEvent {
+        producer(layerType())
+    }
+    
+    
+    // MARK: MapEventLayer constructors
+    
+    /// creates Layer object
+    /// - parameter machine - a machine that receives non-mapped input state and produces events into global reducer
+    /// - parameter mapper - an event mapper
+    public static func event<Event>(
+        _ machine: Machine<GlobalState, Event>,
+        mapper: @escaping Mapper<Event, GlobalEvent>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        .init(machine, mapper: mapper)
+    }
+    
+    /// creates Layer object
+    /// - parameter machine - a supplier of a machine that receives non-mapped input state and produces events into global reducer
+    /// - parameter mapper - an event mapper
+    public static func event<Event>(
+        _ machine: Supplier<Machine<GlobalState, Event>>,
+        mapper: @escaping Mapper<Event, GlobalEvent>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        event(machine(), mapper: mapper)
+    }
+    
+    /// creates Layer object
+    /// - parameter layerType - an object of type that represents a layer that receives non-mapped state and produces events
+    public static func event<L: MapEventLayer>(
+        _ layerType: L
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalEvent == GlobalEvent, L.GlobalState == GlobalState {
+        event(layerType.machine, mapper: layerType.map(event:))
+    }
+    
+    /// creates Layer object
+    /// - parameter layerType - a supplier of an object of type that represents a layer that receives non-mapped state and produces events
+    public static func event<L: MapEventLayer>(
+        _ layerType: Supplier<L>
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalEvent == GlobalEvent, L.GlobalState == GlobalState {
+        event(layerType())
+    }
+    
+    // MARK: MapStateLayer constructors
+    
+    /// creates Layer object
+    /// - parameter machine - a machine that receives input state and produces non-mapped events into global reducer
+    /// - parameter mapper - a state mapper
+    public static func state<State>(
+        _ machine: Machine<State, GlobalEvent>,
+        mapper: @escaping Mapper<GlobalState, State>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        .init(machine, mapper: mapper)
+    }
+    
+    /// creates Layer object
+    /// - parameter machine - a supplier of a machine that receives input state and produces non-mapped events into global reducer
+    /// - parameter mapper - a state mapper
+    public static func state<State>(
+        _ machine: Supplier<Machine<State, GlobalEvent>>,
+        mapper: @escaping Mapper<GlobalState, State>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        state(machine(), mapper: mapper)
+    }
+    
+    /// creates Layer object
+    /// - parameter layerType - an object of type that represents a layer that receives state and produces non-mapped events
+    public static func state<L: MapStateLayer>(
+        _ layerType: L
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalState == GlobalState, L.GlobalEvent == GlobalEvent {
+        state(layerType.machine, mapper: layerType.map(state:))
+    }
+    
+    /// creates Layer object
+    /// - parameter layerType - a supplier of an object of type that represents a layer that receives state and produces non-mapped events
+    public static func state<L: MapStateLayer>(
+        _ layerType: Supplier<L>
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalState == GlobalState, L.GlobalEvent == GlobalEvent {
+        state(layerType())
+    }
+    
+    // MARK: NoMapLayer constructors
+    
+    /// creates Layer object
+    /// - parameter machine -  a machine that receives non-mapped input state and produces non-mapped events into global reducer
+    public static func nomap(
+        _ machine: Machine<GlobalState, GlobalEvent>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        .init(machine)
+    }
+    
+    /// creates Layer object
+    /// - parameter machine - a supplier of a machine that receives non-mapped input state and produces non-mapped events into global reducer
+    public static func nomap(
+        _ machine: Supplier<Machine<GlobalState, GlobalEvent>>
+    ) -> Layer<GlobalEvent, GlobalState> {
+        nomap(machine())
+    }
+    
+    /// creates Layer object
+    /// - parameter layerType - an object of type that represents a layer that receives non-mapped state and produces non-mapped events
+    public static func nomap<L: NoMapLayer>(
+        _ layerType: L
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalEvent == GlobalEvent, L.GlobalState == GlobalState {
+        nomap(layerType.machine)
+    }
+    
+    /// creates Layer object
+    /// - parameter layerType - a supplier of an object of type that represents a layer that receives non-mapped state and produces non-mapped events
+    public static func nomap<L: NoMapLayer>(
+        _ layerType: Supplier<L>
+    ) -> Layer<GlobalEvent, GlobalState>
+    where L.GlobalEvent == GlobalEvent, L.GlobalState == GlobalState {
+        nomap(layerType())
     }
 }
