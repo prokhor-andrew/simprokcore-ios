@@ -13,7 +13,7 @@ The sample is divided into 10 easy steps demonstrating the flow of the app devel
 Let's assume we want to create a counter app that shows a number on the screen and logcat each time it is incremented. When we reopen the app we want to see the same number. So the state must be saved in persistent storage. 
 
 
-## Step 1 - Code application's state
+## Step 1 - Code application's state and event
 
 Here is our global state of the application.
 
@@ -26,6 +26,16 @@ struct AppState {
     }
 }
 ```
+
+Here are our events of the application.
+
+```Swift
+enum AppEvent {
+    case storage(Int)
+    case click
+}
+```
+
 
 ## Step 2 - List down APIs
 
@@ -92,6 +102,7 @@ extension UIWindow: ParentMachine {
 ```Swift
 struct UILayer: LayerType {
     typealias GlobalState = AppState
+    typealias GlobalEvent = AppEvent
     typealias State = UILayerState
     typealias Event = UILayerEvent
     
@@ -103,17 +114,10 @@ struct UILayer: LayerType {
         .init(text: "\(state.value)")
     }
     
-    func reduce(state: AppState?, event: UILayerEvent) -> ReducerResult<AppState> {
-        if let state = state {
-            switch event {
-            case .click:
-                return .set(.init(state.value + 1))
-            }
-        } else {
-            switch event {
-            case .click:
-                return .skip
-            }
+    func map(event: UILayerEvent) -> AppEvent {
+        switch event {
+        case .click:
+            return .click
         }
     }
 }
@@ -179,8 +183,8 @@ struct StorageLayer: LayerType {
         .init(state.value)
     }
     
-    func reduce(state: AppState?, event: StorageLayerEvent) -> ReducerResult<AppState> {
-        .set(.init(event.value))
+    func map(event: StorageLayerEvent) -> AppEvent {
+        .storage(event.value)
     }
 }
 ```
@@ -191,7 +195,21 @@ struct StorageLayer: LayerType {
 
 - Event is going to be ```Void``` as we don't send any events.
 
-- Machine hierarchy not needed, as we can use ```BasicMachine``` class.
+
+- Logger machine:
+
+```Swift
+class LoggerMachine: ChildMachine {
+    typealias Input = String
+    typealias Output = Void
+    
+    var queue: MachineQueue { .main }
+    
+    func process(input: Input?, callback: @escaping Handler<Output>) {
+        print("\(input ?? "loading")")
+    }
+}
+```
 
 - Consumer Layer as we don't emit any events.
 
@@ -199,9 +217,7 @@ struct StorageLayer: LayerType {
 struct LoggerLayer: ConsumerLayer {
     
     var machine: Machine<String, Void> {
-        ~BasicMachine { input, callback in
-            print("\(input ?? "loading")")
-        }
+        ~LoggerMachine()
     }
     
     func map(state: AppState) -> String {
@@ -216,13 +232,27 @@ Now when we have all layers prepared we must connect them together. To do this, 
 
 ```Swift
 extension AppDelegate: Core {
+    typealias Event = AppEvent
     typealias State = AppState
     
-    var layers: [Layer<AppState>] {[
+    var layers: [Layer<AppEvent, AppState>] {[
         ~UILayer(),
-        ~StorageLayer(),
-        ~LoggerLayer()
+        Layer(StorageLayer()),
+        LoggerLayer().layer()
     ]}
+    
+    func reduce(state: AppState?, event: AppEvent) -> ReducerResult<AppState> {
+        switch event {
+        case .click:
+            if let state = state {
+                return .set(.init(state.value + 1))
+            } else {
+                return .skip
+            }
+        case .storage(let value):
+            return .set(.init(value))
+        }
+    }
 }
 ```
 
