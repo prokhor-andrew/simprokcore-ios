@@ -25,7 +25,7 @@ public protocol MapEventLayer {
 public extension MapEventLayer {
     
     /// An equivalent to Layer.event(self)
-    var layer: Layer<GlobalEvent, GlobalState> {
+    var layer: Layer<GlobalState, GlobalEvent> {
         Layer.event(self)
     }
 }
@@ -34,7 +34,7 @@ public extension MapEventLayer {
 public extension MapEventLayer {
     
     /// An equivalent to Layer.event(self)
-    prefix static func ~(operand: Self) -> Layer<GlobalEvent, GlobalState> {
+    prefix static func ~(operand: Self) -> Layer<GlobalState, GlobalEvent> {
         operand.layer
     }
 }

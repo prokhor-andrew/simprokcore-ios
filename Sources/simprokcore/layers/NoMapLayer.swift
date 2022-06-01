@@ -21,7 +21,7 @@ public protocol NoMapLayer {
 public extension NoMapLayer {
     
     /// An equivalent to Layer.nomap(self)
-    var layer: Layer<GlobalEvent, GlobalState> {
+    var layer: Layer<GlobalState, GlobalEvent> {
         Layer.nomap(self)
     }
 }
@@ -30,7 +30,7 @@ public extension NoMapLayer {
 public extension NoMapLayer {
     
     /// An equivalent to Layer.nomap(self)
-    prefix static func ~(operand: Self) -> Layer<GlobalEvent, GlobalState> {
+    prefix static func ~(operand: Self) -> Layer<GlobalState, GlobalEvent> {
         operand.layer
     }
 }

@@ -29,7 +29,7 @@ public protocol LayerType {
 public extension LayerType {
     
     /// An equivalent to Layer.layer(self)
-    var layer: Layer<GlobalEvent, GlobalState> {
+    var layer: Layer<GlobalState, GlobalEvent> {
         Layer.layer(self)
     }
 }
@@ -38,7 +38,7 @@ public extension LayerType {
 public extension LayerType {
     
     /// An equivalent to Layer.layer(self)
-    prefix static func ~(operand: Self) -> Layer<GlobalEvent, GlobalState> {
+    prefix static func ~(operand: Self) -> Layer<GlobalState, GlobalEvent> {
         operand.layer
     }
 }
