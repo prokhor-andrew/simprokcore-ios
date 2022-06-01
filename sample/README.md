@@ -237,7 +237,7 @@ extension AppDelegate: Core {
     
     var layers: [Layer<AppEvent, AppState>] {[
         ~UILayer(),
-        Layer(StorageLayer()),
+        Layer.layer(StorageLayer()),
         LoggerLayer().layer()
     ]}
     
