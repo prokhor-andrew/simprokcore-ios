@@ -34,9 +34,9 @@ extension AppDelegate: Core {
     typealias Event = AppEvent
     typealias State = AppState
     
-    var layers: [Layer<AppEvent, AppState>] {[
+    var layers: [Layer<AppState, AppEvent>] {[
         ~UILayer(),
-        Layer(StorageLayer()),
+         Layer.layer(StorageLayer()),
         LoggerLayer().layer()
     ]}
     
