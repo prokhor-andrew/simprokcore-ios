@@ -10,15 +10,15 @@ import simprokmachine
 // a copy from simproktools
 internal final class CoreReducerMachine<Event, State>: ParentMachine {
     internal typealias Input = Event
-    internal typealias Output = State
+    internal typealias Output = Event
     
     internal let child: Machine<Input, Output>
     
     internal init(reducer: @escaping BiMapper<State?, Event, ReducerResult<State>>) {
-        self.child = ~CoreClassicMachine<State?, Event, State>(.set(nil), reducer: {
+        self.child = ~CoreClassicMachine<State?, Event, Event>(.set(nil), reducer: {
             switch reducer($0, $1) {
             case .set(let state):
-                return .set(state, outputs: state)
+                return .set(state, outputs: $1)
             case .skip:
                 return .set($0)
             }

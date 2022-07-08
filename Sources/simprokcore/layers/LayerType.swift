@@ -11,25 +11,24 @@ import simprokmachine
 /// A general protocol that describes a type that represents a layer object.
 /// Contains a machine that receives mapped layer state as input and emits output.
 public protocol LayerType {
-    associatedtype GlobalState
-    associatedtype GlobalEvent
-    associatedtype State
     associatedtype Event
+    associatedtype Input
+    associatedtype Output
     
     /// A machine that receives mapped state as input and emits output that.
-    var machine: Machine<State, Event> { get }
+    var machine: Machine<Input, Output> { get }
 
     /// A mapper that maps application's state into layer state and sends it into machine as input.
-    func map(state: GlobalState) -> State
+    func map(event: Event) -> Input
     
     /// A mapper that maps layer's event into application's event and sends it into the global reducer
-    func map(event: Event) -> GlobalEvent
+    func map(output: Output) -> Event
 }
 
 public extension LayerType {
     
     /// An equivalent to Layer.layer(self)
-    var layer: Layer<GlobalState, GlobalEvent> {
+    var layer: Layer<Event> {
         Layer.layer(self)
     }
 }
@@ -38,7 +37,7 @@ public extension LayerType {
 public extension LayerType {
     
     /// An equivalent to Layer.layer(self)
-    prefix static func ~(operand: Self) -> Layer<GlobalState, GlobalEvent> {
+    prefix static func ~(operand: Self) -> Layer<Event> {
         operand.layer
     }
 }

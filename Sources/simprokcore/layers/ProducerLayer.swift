@@ -11,22 +11,22 @@ import simprokmachine
 /// A general protocol that describes a type that represents a layer object that does not consume state.
 /// Contains a machine that *does not* receive mapped layer state as input and emits output.
 public protocol ProducerLayer {
-    associatedtype GlobalEvent
     associatedtype Event
-    associatedtype State
+    associatedtype Input
+    associatedtype Output
     
     /// A machine that *does not* receive mapped state as input and emits output.
-    var machine: Machine<State, Event> { get }
+    var machine: Machine<Input, Output> { get }
     
     /// A mapper that maps layer's event into application's event and sends it into the global reducer
-    func map(event: Event) -> GlobalEvent
+    func map(output: Output) -> Event
 }
 
 
 public extension ProducerLayer {
     
     /// An equivalent to Layer.producer(self)
-    func layer<GlobalState>() -> Layer<GlobalState, GlobalEvent> {
+    var layer: Layer<Event> {
         Layer.producer(self)
     }
 }
@@ -35,7 +35,7 @@ public extension ProducerLayer {
 public extension ProducerLayer {
     
     /// An equivalent to Layer.producer(self)
-    prefix static func ~<GlobalState>(operand: Self) -> Layer<GlobalState, GlobalEvent> {
-        operand.layer()
+    prefix static func ~(operand: Self) -> Layer<Event> {
+        operand.layer
     }
 }

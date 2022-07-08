@@ -10,18 +10,17 @@ import simprokmachine
 /// A general protocol that describes a type that represents a layer object.
 /// Contains a machine that receives global state as input and emits global events as output.
 public protocol NoMapLayer {
-    associatedtype GlobalState
-    associatedtype GlobalEvent
+    associatedtype Event
     
     /// A machine that receives state as input and emits output 
-    var machine: Machine<GlobalState, GlobalEvent> { get }
+    var machine: Machine<Event, Event> { get }
 }
 
 
 public extension NoMapLayer {
     
     /// An equivalent to Layer.nomap(self)
-    var layer: Layer<GlobalState, GlobalEvent> {
+    var layer: Layer<Event> {
         Layer.nomap(self)
     }
 }
@@ -30,7 +29,7 @@ public extension NoMapLayer {
 public extension NoMapLayer {
     
     /// An equivalent to Layer.nomap(self)
-    prefix static func ~(operand: Self) -> Layer<GlobalState, GlobalEvent> {
+    prefix static func ~(operand: Self) -> Layer<Event> {
         operand.layer
     }
 }

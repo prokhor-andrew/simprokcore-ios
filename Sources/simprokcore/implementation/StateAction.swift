@@ -9,7 +9,7 @@ import simprokmachine
 
 
 /// This enum is public for implementation reasons only. It should not be used directly.
-public enum StateAction<State, Event> {
+internal enum StateAction<Event> {
     case stateWillUpdate(Event)
-    case stateDidUpdate(State)
+    case stateDidUpdate(Event)
 }
