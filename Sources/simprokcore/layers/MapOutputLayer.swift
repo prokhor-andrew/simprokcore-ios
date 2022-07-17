@@ -18,7 +18,7 @@ public protocol MapOutputLayer {
     var machine: Machine<Event, Output> { get }
     
     /// A mapper that maps layer's event into application's event and sends it into the global reducer
-    func map(output: Output) -> Event
+    func map(output: Output) -> Ward<Event>
 }
 
 public extension MapOutputLayer {

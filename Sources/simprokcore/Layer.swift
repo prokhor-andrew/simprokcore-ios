@@ -15,46 +15,46 @@ public struct Layer<Event> {
 
     private init<Input, Output>(
         _ machine: Machine<Input, Output>,
-        stateMapper: @escaping Mapper<Event, Input>,
-        eventMapper: @escaping Mapper<Output, Event>
+        stateMapper: @escaping Mapper<Event, Ward<Input>>,
+        eventMapper: @escaping Mapper<Output, Ward<Event>>
     ) {
         self.machine = machine.inward {
             switch $0 {
             case .stateWillUpdate:
                 return .set()
             case .stateDidUpdate(let state):
-                return .set(stateMapper(state))
+                return stateMapper(state)
             }
         }
-        .outward { event in .set(.stateWillUpdate(eventMapper(event))) }
+        .outward { .set(eventMapper($0).values.map { .stateWillUpdate($0) }) }
     }
 
     private init<Input, Output>(
         _ machine: Machine<Input, Output>,
-        mapper: @escaping Mapper<Event, Input>
+        mapper: @escaping Mapper<Event, Ward<Input>>
     ) {
         self.machine = machine.outward { _ in .set() }.inward {
             switch $0 {
             case .stateWillUpdate:
                 return .set()
             case .stateDidUpdate(let state):
-                return .set(mapper(state))
+                return mapper(state)
             }
         }
     }
     
     private init<Input, Output>(
         _ machine: Machine<Input, Output>,
-        mapper: @escaping Mapper<Output, Event>
+        mapper: @escaping Mapper<Output, Ward<Event>>
     ) {
         self.machine = machine.inward { _ in .set() }.outward {
-            .set(.stateWillUpdate(mapper($0)))
+            .set(mapper($0).values.map { .stateWillUpdate($0) })
         }
     }
         
     private init<Output>(
         _ machine: Machine<Event, Output>,
-        mapper: @escaping Mapper<Output, Event>
+        mapper: @escaping Mapper<Output, Ward<Event>>
     ) {
         self.machine = machine.inward {
             switch $0 {
@@ -64,19 +64,19 @@ public struct Layer<Event> {
                 return .set(state)
             }
         }
-        .outward { event in .set(.stateWillUpdate(mapper(event))) }
+        .outward { event in .set(mapper(event).values.map { .stateWillUpdate($0) }) }
     }
     
     private init<Input>(
         _ machine: Machine<Input, Event>,
-        mapper: @escaping Mapper<Event, Input>
+        mapper: @escaping Mapper<Event, Ward<Input>>
     ) {
         self.machine = machine.inward {
             switch $0 {
             case .stateWillUpdate:
                 return .set()
             case .stateDidUpdate(let state):
-                return .set(mapper(state))
+                return mapper(state)
             }
         }
         .outward { event in .set(.stateWillUpdate(event)) }
@@ -105,8 +105,8 @@ public struct Layer<Event> {
     /// - parameter eventMapper - an event mapper
     public static func layer<Input, Output>(
         _ machine: Machine<Input, Output>,
-        stateMapper: @escaping Mapper<Event, Input>,
-        eventMapper: @escaping Mapper<Output, Event>
+        stateMapper: @escaping Mapper<Event, Ward<Input>>,
+        eventMapper: @escaping Mapper<Output, Ward<Event>>
     ) -> Layer<Event> {
         .init(machine, stateMapper: stateMapper, eventMapper: eventMapper)
     }
@@ -117,8 +117,8 @@ public struct Layer<Event> {
     /// - parameter eventMapper - an event mapper
     public static func layer<Input, Output>(
         _ machine: Supplier<Machine<Input, Output>>,
-        stateMapper: @escaping Mapper<Event, Input>,
-        eventMapper: @escaping Mapper<Output, Event>
+        stateMapper: @escaping Mapper<Event, Ward<Input>>,
+        eventMapper: @escaping Mapper<Output, Ward<Event>>
     ) -> Layer<Event> {
         layer(machine(), stateMapper: stateMapper, eventMapper: eventMapper)
     }
@@ -129,7 +129,7 @@ public struct Layer<Event> {
         _ layerType: L
     ) -> Layer<Event>
     where L.Event == Event {
-        layer(layerType.machine, stateMapper: layerType.map(event:), eventMapper: layerType.map(output:))
+        layer(layerType.machine, stateMapper: layerType.map(input:), eventMapper: layerType.map(output:))
     }
     
     /// creates Layer object
@@ -148,7 +148,7 @@ public struct Layer<Event> {
     /// - parameter mapper - a state mapper
     public static func consumer<Input, Output>(
         _ machine: Machine<Input, Output>,
-        mapper: @escaping Mapper<Event, Input>
+        mapper: @escaping Mapper<Event, Ward<Input>>
     ) -> Layer<Event> {
         .init(machine, mapper: mapper)
     }
@@ -158,7 +158,7 @@ public struct Layer<Event> {
     /// - parameter mapper - a state mapper
     public static func consumer<Input, Output>(
         _ machine: Supplier<Machine<Input, Output>>,
-        mapper: @escaping Mapper<Event, Input>
+        mapper: @escaping Mapper<Event, Ward<Input>>
     ) -> Layer<Event> {
         consumer(machine(), mapper: mapper)
     }
@@ -169,7 +169,7 @@ public struct Layer<Event> {
         _ layerType: L
     ) -> Layer<Event>
     where L.Event == Event {
-        consumer(layerType.machine, mapper: layerType.map(event:))
+        consumer(layerType.machine, mapper: layerType.map(input:))
     }
     
     /// creates Layer object
@@ -188,7 +188,7 @@ public struct Layer<Event> {
     /// - parameter mapper - an event mapper
     public static func producer<Input, Output>(
         _ machine: Machine<Input, Output>,
-        mapper: @escaping Mapper<Output, Event>
+        mapper: @escaping Mapper<Output, Ward<Event>>
     ) -> Layer<Event> {
         .init(machine, mapper: mapper)
     }
@@ -198,7 +198,7 @@ public struct Layer<Event> {
     /// - parameter mapper - an event mapper
     public static func producer<Input, Output>(
         _ machine: Supplier<Machine<Input, Output>>,
-        mapper: @escaping Mapper<Output, Event>
+        mapper: @escaping Mapper<Output, Ward<Event>>
     ) -> Layer<Event> {
         producer(machine(), mapper: mapper)
     }
@@ -229,7 +229,7 @@ public struct Layer<Event> {
     /// - parameter mapper - an event mapper
     public static func output<Output>(
         _ machine: Machine<Event, Output>,
-        mapper: @escaping Mapper<Output, Event>
+        mapper: @escaping Mapper<Output, Ward<Event>>
     ) -> Layer<Event> {
         .init(machine, mapper: mapper)
     }
@@ -239,7 +239,7 @@ public struct Layer<Event> {
     /// - parameter mapper - an event mapper
     public static func output<Output>(
         _ machine: Supplier<Machine<Event, Output>>,
-        mapper: @escaping Mapper<Output, Event>
+        mapper: @escaping Mapper<Output, Ward<Event>>
     ) -> Layer<Event> {
         output(machine(), mapper: mapper)
     }
@@ -269,7 +269,7 @@ public struct Layer<Event> {
     /// - parameter mapper - a state mapper
     public static func input<Input>(
         _ machine: Machine<Input, Event>,
-        mapper: @escaping Mapper<Event, Input>
+        mapper: @escaping Mapper<Event, Ward<Input>>
     ) -> Layer<Event> {
         .init(machine, mapper: mapper)
     }
@@ -279,7 +279,7 @@ public struct Layer<Event> {
     /// - parameter mapper - a state mapper
     public static func input<Input>(
         _ machine: Supplier<Machine<Input, Event>>,
-        mapper: @escaping Mapper<Event, Input>
+        mapper: @escaping Mapper<Event, Ward<Input>>
     ) -> Layer<Event> {
         input(machine(), mapper: mapper)
     }
@@ -290,7 +290,7 @@ public struct Layer<Event> {
         _ layerType: L
     ) -> Layer<Event>
     where L.Event == Event {
-        input(layerType.machine, mapper: layerType.map(event:))
+        input(layerType.machine, mapper: layerType.map(input:))
     }
     
     /// creates Layer object

@@ -59,7 +59,7 @@ Once you have your Swift package set up, adding ```simprokcore``` as a dependenc
 
 ```
 dependencies: [
-    .package(url: "https://github.com/simprok-dev/simprokcore-ios.git", .upToNextMajor(from: "1.1.7"))
+    .package(url: "https://github.com/simprok-dev/simprokcore-ios.git", .upToNextMajor(from: "1.1.8"))
 ]
 ```
 

@@ -19,7 +19,7 @@ public protocol ConsumerLayer {
     var machine: Machine<Input, Output> { get }
     
     /// A mapper that maps application's state into layer state and sends it into machine as input.
-    func map(event: Event) -> Input
+    func map(input: Event) -> Ward<Input>
 }
 
 
