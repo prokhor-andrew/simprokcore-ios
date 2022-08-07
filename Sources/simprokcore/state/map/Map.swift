@@ -1,12 +1,14 @@
 //
-//  ReducerResult.swift
+//  Map.swift
 //  simprokcore
 //
 //  Created by Andrey Prokhorenko on 01.12.2021.
 //  Copyright (c) 2022 simprok. All rights reserved.
 
+import Foundation
 
-public enum ReducerResult<State> {
-    case set(State)
+
+public enum Map<Event> {
+    case set(Event)
     case skip
 }

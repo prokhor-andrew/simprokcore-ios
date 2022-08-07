@@ -6,7 +6,7 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 
 
-extension Array {
+internal extension Array {
     
     func copy(add element: Element) -> Self {
         var copied = self

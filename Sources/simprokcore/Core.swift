@@ -15,26 +15,25 @@ public protocol Core: RootMachine where Input == Event, Output == Event {
     var layers: [Layer<Event>] { get }
     
     
-    var domain: [State<Event>] { get }
+    var domain: State<Event> { get }
 }
 
 public extension Core {
     
     var child: Machine<Event, Event> {
-        let reducer = CoreClassicMachine<[State<Event>], Event, Event>(
-            CoreClassicResult<[State<Event>], Event>.set(domain)
-        ) { states, event in
+        let reducer = CoreClassicMachine<State<Event>, Event, Event>(
+            CoreClassicResult<State<Event>, Event>.set(domain)
+        ) { state, event in
             var isSkippable = true
-            let mapped = states.map { state -> State<Event> in
-                switch state._function(event) {
-                case .skip:
-                    return state
-                case .set(let new):
-                    isSkippable = false
-                    return new
-                }
+            let mapped: State<Event>
+            switch state.transit(event) {
+            case .skip:
+                mapped = state
+            case .set(let new):
+                isSkippable = false
+                mapped = new
             }
-            
+
             return .set(mapped, outputs: isSkippable ? [] : [event])
         }
         
@@ -58,31 +57,5 @@ public extension Core {
         ).redirect { .back($0) }
         
         return merged.outward { _ in Ward.set() }.inward { _ in Ward.set() }
-    }
-}
-
-
-public struct State<Event> {
-    
-    internal let _function: Mapper<Event, ReducerResult<State<Event>>>
-    
-    public init(_ function: @escaping Mapper<Event, ReducerResult<State<Event>>>) {
-        _function = function
-    }
-    
-    public func map<T>(_ function: @escaping Mapper<T, ReducerResult<Event>>) -> State<T> {
-        State<T> { event in
-            switch function(event) {
-            case .skip:
-                return .skip
-            case .set(let mapped):
-                switch _function(mapped) {
-                case .skip:
-                    return .skip
-                case .set(let state):
-                    return .set(state.map(function))
-                }
-            }
-        }
     }
 }
