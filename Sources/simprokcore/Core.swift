@@ -14,27 +14,21 @@ public protocol Core: RootMachine where Input == Event, Output == Event {
     
     var layers: [Layer<Event>] { get }
     
-    
-    var domain: State<Event> { get }
+    var feature: State<Event> { get }
 }
 
 public extension Core {
     
     var child: Machine<Event, Event> {
         let reducer = CoreClassicMachine<State<Event>, Event, Event>(
-            CoreClassicResult<State<Event>, Event>.set(domain)
+            CoreClassicResult<State<Event>, Event>.set(feature)
         ) { state, event in
-            var isSkippable = true
-            let mapped: State<Event>
             switch state.transit(event) {
             case .skip:
-                mapped = state
+                return .set(state, outputs: [])
             case .set(let new):
-                isSkippable = false
-                mapped = new
+                return .set(new, outputs: event)
             }
-
-            return .set(mapped, outputs: isSkippable ? [] : [event])
         }
         
         let mapped: Machine<StateAction<Event>, StateAction<Event>> = reducer.outward { .set(.stateDidUpdate($0)) }.inward {

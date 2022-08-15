@@ -6,24 +6,59 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 
 import simprokmachine
-import Foundation
-
 
 public struct State<Event> {
     
-    public let id: String
-    public let transit: Mapper<Event, Transition<Event>>
+    public let transit: Mapper<Event, Transition<State<Event>>>
     
-    public init(id: String, transit: @escaping Mapper<Event, Transition<Event>>) {
-        self.id = id
+    public init(transit: @escaping Mapper<Event, Transition<State<Event>>>) {
         self.transit = transit
     }
     
-    public init(transit: @escaping Mapper<Event, Transition<Event>>) {
-        self.init(id: UUID().uuidString, transit: transit)
+    public func isExpecting(event: Event) -> Bool {
+        switch transit(event) {
+        case .set:
+            return true
+        case .skip:
+            return false
+        }
     }
     
-    public func id(_ id: String) -> State<Event> {
-        .init(id: id, transit: transit)
+    public func isExpecting(any events: Event...) -> Bool {
+        isExpecting(any: events)
+    }
+    
+    public func isExpecting(any events: [Event]) -> Bool {
+        if events.isEmpty {
+            return false
+        }
+        for event in events {
+            switch transit(event) {
+            case .set:
+                return true
+            case .skip:
+                break
+            }
+        }
+        return false
+    }
+    
+    public func isExpecting(all events: Event...) -> Bool {
+        isExpecting(all: events)
+    }
+    
+    public func isExpecting(all events: [Event]) -> Bool {
+        if events.isEmpty {
+            return false
+        }
+        for event in events {
+            switch transit(event) {
+            case .skip:
+                return false
+            case .set:
+                break
+            }
+        }
+        return true
     }
 }
