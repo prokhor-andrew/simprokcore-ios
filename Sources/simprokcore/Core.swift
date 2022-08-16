@@ -20,18 +20,7 @@ public protocol Core: RootMachine where Input == Event, Output == Event {
 public extension Core {
     
     var child: Machine<Event, Event> {
-        let reducer = CoreClassicMachine<State<Event>, Event, Event>(
-            CoreClassicResult<State<Event>, Event>.set(feature)
-        ) { state, event in
-            switch state.transit(event) {
-            case .skip:
-                return .set(state, outputs: [])
-            case .set(let new):
-                return .set(new, outputs: event)
-            }
-        }
-        
-        let mapped: Machine<StateAction<Event>, StateAction<Event>> = reducer.outward { .set(.stateDidUpdate($0)) }.inward {
+        let mapped: Machine<StateAction<Event>, StateAction<Event>> = StateMachine(feature).outward { .set(.stateDidUpdate($0)) }.inward {
             switch $0 {
             case .stateDidUpdate:
                 return .set()
