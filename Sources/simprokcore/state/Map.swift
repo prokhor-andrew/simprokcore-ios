@@ -9,84 +9,36 @@ import simprokmachine
 
 
 
-public func map1<Event, T>(
+public func map<Event, T>(
     _ state: State<Event>,
-    function: @escaping BiMapper<State<Event>, T, Ward<Event>>
+    function: @escaping Mapper<T, Transition<Event>>
 ) -> State<T> {
-    state.map1(function)
+    state.map(function)
 }
 
-public func map2<Event, T>(
-    _ state: State<Event>,
-    function: @escaping BiMapper<State<Event>, T, Ward<Event>>
-) -> State<T> {
-    state.map2(function)
-}
 
 public extension State {
     
-    static func map1<T>(
+    static func map<T>(
         _ state: State<Event>,
-        function: @escaping BiMapper<Self, T, Ward<Event>>
+        function: @escaping Mapper<T, Transition<Event>>
     ) -> State<T> {
-        state.map1(function)
+        state.map(function)
     }
     
-    static func map2<T>(
-        _ state: State<Event>,
-        function: @escaping BiMapper<Self, T, Ward<Event>>
-    ) -> State<T> {
-        state.map2(function)
-    }
-    
-    func map1<T>(_ function: @escaping BiMapper<Self, T, Ward<Event>>) -> State<T> {
+    func map<T>(_ function: @escaping Mapper<T, Transition<Event>>) -> State<T> {
         State<T> { event in
-            if let state = generate1(current: nil, events: function(self, event).values, index: 0) {
-                return .set(state.map1(function))
-            } else {
+            switch function(event) {
+            case .skip:
                 return .skip
-            }
-        }
-    }
-    
-    func map2<T>(_ function: @escaping BiMapper<Self, T, Ward<Event>>) -> State<T> {
-        State<T> { event in
-            let result = function(self, event).values
-            if result.isEmpty {
-                return .skip
-            } else {
-                if let state = generate2(events: result, index: 0) {
-                    return .set(state.map2(function))
-                } else {
+            case .set(let mapped):
+                switch transit(mapped) {
+                case .skip:
                     return .skip
+                case .set(let new):
+                    return .set(new.map(function).set(causing: event))
                 }
             }
-        }
-    }
-    
-    private func generate1(current: State<Event>?, events: [Event], index: Int) -> State<Event>? {
-        if index >= events.count {
-            return current
-        }
-        
-        switch transit(events[index]) {
-        case .set(let new):
-            return new.generate1(current: new, events: events, index: index + 1)
-        case .skip:
-            return current
-        }
-    }
-    
-    private func generate2(events: [Event], index: Int) -> State<Event>? {
-        if index >= events.count {
-            return self
-        }
-        
-        switch transit(events[index]) {
-        case .set(let new):
-            return new.generate2(events: events, index: index + 1)
-        case .skip:
-            return nil
         }
     }
 }

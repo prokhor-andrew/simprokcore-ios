@@ -24,7 +24,7 @@ public extension State {
                 case .skip:
                     continue
                 case .set(let new):
-                    return .set(new)
+                    return .set(new.set(causing: event))
                 }
             }
             return .skip

@@ -19,7 +19,7 @@ public extension State {
             case .skip:
                 return .skip
             case .set(let new):
-                return .set(reduce(new, function: function))
+                return .set(reduce(new, function: function).set(causing: event))
             }
         }
     }
@@ -32,7 +32,7 @@ public extension State {
             case .skip:
                 return .skip
             case .set(let new):
-                return .set(reduce(new, function: function))
+                return .set(reduce(new, function: function).set(causing: event))
             }
         }
     }

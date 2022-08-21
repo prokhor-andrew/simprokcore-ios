@@ -28,12 +28,20 @@ public extension State {
                     return state
                 case .set(let new):
                     skippable = false
-                    return new
+                    return new.set(causing: event)
                 }
             }
 
-            return skippable ? .skip : .set(merge(new))
+            return skippable ? .skip : .set(merge(new).set(causing: event))
         }
+    }
+    
+    func and(_ state: @autoclosure @escaping () -> State<Event>) -> State<Event> {
+        State.merge([self, state()])
+    }
+    
+    func and(_ states: @autoclosure @escaping () -> [State<Event>]) -> State<Event> {
+        State.merge(states().copy(add: self))
     }
 }
 
