@@ -10,20 +10,10 @@ import simprokmachine
 
 public struct State<Event> {
     
-    public let causing: Event?
     public let transit: Mapper<Event, Transition<State<Event>>>
-    
-    private init(causing: Event?, transit: @escaping Mapper<Event, Transition<State<Event>>>) {
-        self.causing = causing
-        self.transit = transit
-    }
-    
-    public func set(causing: Event) -> State<Event> {
-        State(causing: causing, transit: transit)
-    }
-    
+ 
     public init(transit: @escaping Mapper<Event, Transition<State<Event>>>) {
-        self.init(causing: nil, transit: transit)
+        self.transit = transit
     }
     
     public func isExpecting(event: Event) -> Bool {

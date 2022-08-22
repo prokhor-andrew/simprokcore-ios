@@ -28,11 +28,11 @@ public extension State {
                     return state
                 case .set(let new):
                     skippable = false
-                    return new.set(causing: event)
+                    return new
                 }
             }
 
-            return skippable ? .skip : .set(merge(new).set(causing: event))
+            return skippable ? .skip : .set(merge(new))
         }
     }
     

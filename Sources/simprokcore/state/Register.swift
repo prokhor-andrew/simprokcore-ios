@@ -11,25 +11,25 @@ import simprokmachine
 public extension State {
 
     func register(
-        function: @escaping Mapper<State<Event>, Transition<State<Event>>>
+        function: @escaping Mapper<Event, Transition<State<Event>>>
     ) -> State<Event> {
         register(sub: .final(), function: function)
     }
     
     private func register(
         sub: State<Event>,
-        function: @escaping Mapper<State<Event>, Transition<State<Event>>>
+        function: @escaping Mapper<Event, Transition<State<Event>>>
     ) -> State<Event> {
         State { event in
             switch transit(event) {
             case .skip:
                 return .skip
             case .set(let new):
-                switch function(new) {
+                switch function(event) {
                 case .skip:
-                    return .set(new.register(sub: sub, function: function).set(causing: event))
+                    return .set(new.register(sub: sub, function: function))
                 case .set(let sub):
-                    return .set(new.register(sub: sub, function: function).set(causing: event))
+                    return .set(new.register(sub: sub, function: function))
                 }
             }
         }.and(sub)

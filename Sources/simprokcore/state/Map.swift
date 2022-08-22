@@ -36,7 +36,7 @@ public extension State {
                 case .skip:
                     return .skip
                 case .set(let new):
-                    return .set(new.map(function).set(causing: event))
+                    return .set(new.map(function))
                 }
             }
         }

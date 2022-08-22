@@ -19,7 +19,7 @@ public func ==><Event>(
     rhs: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> where Event: Equatable {
     State { event in
-        event == lhs() ? .set(rhs().set(causing: event)) : .skip
+        event == lhs() ? .set(rhs()) : .skip
     }
 }
 
@@ -28,7 +28,7 @@ public func !=><Event>(
     rhs: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> where Event: Equatable {
     State { event in
-        event != lhs() ? .set(rhs().set(causing: event)) : .skip
+        event != lhs() ? .set(rhs()) : .skip
     }
 }
 
@@ -37,7 +37,7 @@ public func <=><Event>(
     rhs: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> where Event: Equatable {
     State { event in
-        event == lhs() ? .set(rhs().set(causing: event)) : .set((lhs() <=> rhs()).set(causing: event))
+        event == lhs() ? .set(rhs()) : .set(lhs() <=> rhs())
     }
 }
 
@@ -47,7 +47,7 @@ public func <!><Event>(
     rhs: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> where Event: Equatable {
     State { event in
-        event != lhs() ? .set(rhs().set(causing: event)) : .set((lhs() <!> rhs()).set(causing: event))
+        event != lhs() ? .set(rhs()) : .set(lhs() <!> rhs())
     }
 }
 
@@ -57,7 +57,7 @@ public func ==><Event>(
     rhs: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
     State { event in
-        lhs().predicate(event) ? .set(rhs().set(causing: event)) : .skip
+        lhs().predicate(event) ? .set(rhs()) : .skip
     }
 }
 
@@ -67,7 +67,7 @@ public func !=><Event>(
     rhs: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
     State { event in
-        !lhs().predicate(event) ? .set(rhs().set(causing: event)) : .skip
+        !lhs().predicate(event) ? .set(rhs()) : .skip
     }
 }
 
@@ -76,7 +76,7 @@ public func <=><Event>(
     rhs: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
     State { event in
-        lhs().predicate(event) ? .set(rhs().set(causing: event)) : .set((lhs() <=> rhs()).set(causing: event))
+        lhs().predicate(event) ? .set(rhs()) : .set(lhs() <=> rhs())
     }
 }
 
@@ -85,6 +85,6 @@ public func <!><Event>(
     rhs: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
     State { event in
-        !lhs().predicate(event) ? .set(rhs().set(causing: event)) : .set((lhs() <=> rhs()).set(causing: event))
+        !lhs().predicate(event) ? .set(rhs()) : .set(lhs() <=> rhs())
     }
 }
