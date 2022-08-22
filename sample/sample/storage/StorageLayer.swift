@@ -11,16 +11,21 @@ import simprokcore
 
 
 struct StorageLayer: LayerType {
-    
-    var machine: Machine<StorageLayerState, StorageLayerEvent> {
+        
+    var machine: Machine<StorageLayerInput, StorageLayerOutput> {
         UserDefaults.standard.machine
     }
-    
-    func map(state: AppState) -> StorageLayerState {
-        .init(state.value)
+
+    func map(input: AppEvent) -> Ward<StorageLayerInput> {
+        switch input {
+        case .storage:
+            return .set()
+        case .click:
+            return .set(.click)
+        }
     }
-    
-    func map(event: StorageLayerEvent) -> AppEvent {
-        .storage(event.value)
+
+    func map(output: StorageLayerOutput) -> Ward<AppEvent> {
+        .set(.storage(output.value))
     }
 }

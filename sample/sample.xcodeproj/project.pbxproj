@@ -10,17 +10,16 @@
 		0767283C27C1304600352314 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767283B27C1304600352314 /* AppDelegate.swift */; };
 		0767284527C1304900352314 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0767284427C1304900352314 /* Assets.xcassets */; };
 		0767284827C1304900352314 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0767284627C1304900352314 /* LaunchScreen.storyboard */; };
-		0767285327C131E000352314 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767285227C131E000352314 /* AppState.swift */; };
 		0767285627C1347400352314 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767285427C1347300352314 /* MainViewController.swift */; };
 		0767285727C1347400352314 /* UIWindow+Machine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767285527C1347400352314 /* UIWindow+Machine.swift */; };
 		0767285927C1348F00352314 /* UILayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767285827C1348F00352314 /* UILayer.swift */; };
-		0767285B27C134AB00352314 /* UILayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767285A27C134AB00352314 /* UILayerState.swift */; };
-		0767285D27C134BF00352314 /* UILayerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767285C27C134BF00352314 /* UILayerEvent.swift */; };
+		0767285B27C134AB00352314 /* UILayerInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767285A27C134AB00352314 /* UILayerInput.swift */; };
+		0767285D27C134BF00352314 /* UILayerOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767285C27C134BF00352314 /* UILayerOutput.swift */; };
 		0767286127C136BF00352314 /* StorageLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767286027C136BF00352314 /* StorageLayer.swift */; };
-		0767286527C136EE00352314 /* StorageLayerEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767286427C136EE00352314 /* StorageLayerEvent.swift */; };
+		0767286527C136EE00352314 /* StorageLayerOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767286427C136EE00352314 /* StorageLayerOutput.swift */; };
 		0767286727C1374800352314 /* UserDefaults+Machine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767286627C1374800352314 /* UserDefaults+Machine.swift */; };
 		0767286B27C13B1400352314 /* LoggerLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767286A27C13B1300352314 /* LoggerLayer.swift */; };
-		078F2BB527F75C7B005CACB4 /* StorageLayerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078F2BB427F75C7B005CACB4 /* StorageLayerState.swift */; };
+		078F2BB527F75C7B005CACB4 /* StorageLayerInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078F2BB427F75C7B005CACB4 /* StorageLayerInput.swift */; };
 		07B9CD7E2844F990009B4B2E /* AppEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B9CD7D2844F990009B4B2E /* AppEvent.swift */; };
 		07B9CD802844FA16009B4B2E /* LoggerMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B9CD7F2844FA16009B4B2E /* LoggerMachine.swift */; };
 		07CEB321280082D70065EE29 /* simprokcore in Frameworks */ = {isa = PBXBuildFile; productRef = 07CEB320280082D70065EE29 /* simprokcore */; };
@@ -32,17 +31,16 @@
 		0767284427C1304900352314 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0767284727C1304900352314 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0767284927C1304900352314 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0767285227C131E000352314 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		0767285427C1347300352314 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		0767285527C1347400352314 /* UIWindow+Machine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWindow+Machine.swift"; sourceTree = "<group>"; };
 		0767285827C1348F00352314 /* UILayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILayer.swift; sourceTree = "<group>"; };
-		0767285A27C134AB00352314 /* UILayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILayerState.swift; sourceTree = "<group>"; };
-		0767285C27C134BF00352314 /* UILayerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILayerEvent.swift; sourceTree = "<group>"; };
+		0767285A27C134AB00352314 /* UILayerInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILayerInput.swift; sourceTree = "<group>"; };
+		0767285C27C134BF00352314 /* UILayerOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILayerOutput.swift; sourceTree = "<group>"; };
 		0767286027C136BF00352314 /* StorageLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageLayer.swift; sourceTree = "<group>"; };
-		0767286427C136EE00352314 /* StorageLayerEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageLayerEvent.swift; sourceTree = "<group>"; };
+		0767286427C136EE00352314 /* StorageLayerOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageLayerOutput.swift; sourceTree = "<group>"; };
 		0767286627C1374800352314 /* UserDefaults+Machine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Machine.swift"; sourceTree = "<group>"; };
 		0767286A27C13B1300352314 /* LoggerLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerLayer.swift; sourceTree = "<group>"; };
-		078F2BB427F75C7B005CACB4 /* StorageLayerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageLayerState.swift; sourceTree = "<group>"; };
+		078F2BB427F75C7B005CACB4 /* StorageLayerInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageLayerInput.swift; sourceTree = "<group>"; };
 		07B9CD7D2844F990009B4B2E /* AppEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEvent.swift; sourceTree = "<group>"; };
 		07B9CD7F2844FA16009B4B2E /* LoggerMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerMachine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,7 +79,6 @@
 				0767286927C13B0A00352314 /* logger */,
 				0767285F27C136B600352314 /* storage */,
 				0767285E27C1368800352314 /* ui */,
-				0767285227C131E000352314 /* AppState.swift */,
 				07B9CD7D2844F990009B4B2E /* AppEvent.swift */,
 				0767283B27C1304600352314 /* AppDelegate.swift */,
 				0767284427C1304900352314 /* Assets.xcassets */,
@@ -97,8 +94,8 @@
 				0767285427C1347300352314 /* MainViewController.swift */,
 				0767285527C1347400352314 /* UIWindow+Machine.swift */,
 				0767285827C1348F00352314 /* UILayer.swift */,
-				0767285A27C134AB00352314 /* UILayerState.swift */,
-				0767285C27C134BF00352314 /* UILayerEvent.swift */,
+				0767285A27C134AB00352314 /* UILayerInput.swift */,
+				0767285C27C134BF00352314 /* UILayerOutput.swift */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -107,8 +104,8 @@
 			isa = PBXGroup;
 			children = (
 				0767286027C136BF00352314 /* StorageLayer.swift */,
-				0767286427C136EE00352314 /* StorageLayerEvent.swift */,
-				078F2BB427F75C7B005CACB4 /* StorageLayerState.swift */,
+				0767286427C136EE00352314 /* StorageLayerOutput.swift */,
+				078F2BB427F75C7B005CACB4 /* StorageLayerInput.swift */,
 				0767286627C1374800352314 /* UserDefaults+Machine.swift */,
 			);
 			path = storage;
@@ -154,7 +151,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					0767283727C1304600352314 = {
 						CreatedOnToolsVersion = 13.0;
@@ -199,16 +196,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				078F2BB527F75C7B005CACB4 /* StorageLayerState.swift in Sources */,
+				078F2BB527F75C7B005CACB4 /* StorageLayerInput.swift in Sources */,
 				0767286B27C13B1400352314 /* LoggerLayer.swift in Sources */,
 				0767285627C1347400352314 /* MainViewController.swift in Sources */,
 				0767283C27C1304600352314 /* AppDelegate.swift in Sources */,
 				0767285927C1348F00352314 /* UILayer.swift in Sources */,
 				07B9CD802844FA16009B4B2E /* LoggerMachine.swift in Sources */,
-				0767285B27C134AB00352314 /* UILayerState.swift in Sources */,
-				0767285D27C134BF00352314 /* UILayerEvent.swift in Sources */,
-				0767286527C136EE00352314 /* StorageLayerEvent.swift in Sources */,
-				0767285327C131E000352314 /* AppState.swift in Sources */,
+				0767285B27C134AB00352314 /* UILayerInput.swift in Sources */,
+				0767285D27C134BF00352314 /* UILayerOutput.swift in Sources */,
+				0767286527C136EE00352314 /* StorageLayerOutput.swift in Sources */,
 				0767285727C1347400352314 /* UIWindow+Machine.swift in Sources */,
 				0767286127C136BF00352314 /* StorageLayer.swift in Sources */,
 				07B9CD7E2844F990009B4B2E /* AppEvent.swift in Sources */,
@@ -281,7 +277,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -336,7 +332,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -360,7 +356,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -388,7 +384,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -431,7 +427,7 @@
 			repositoryURL = "https://github.com/simprok-dev/simprokcore-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 1.1.5;
+				version = 1.1.9;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

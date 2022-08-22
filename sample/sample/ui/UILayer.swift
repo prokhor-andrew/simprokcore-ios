@@ -11,23 +11,22 @@ import UIKit
 
 
 struct UILayer: LayerType {
-    typealias GlobalState = AppState
-    typealias GlobalEvent = AppEvent
-    typealias State = UILayerState
-    typealias Event = UILayerEvent
+    typealias Event = AppEvent
+    typealias Input = UILayerInput
+    typealias Output = UILayerOutput
     
-    var machine: Machine<UILayerState, UILayerEvent> {
+    var machine: Machine<UILayerInput, UILayerOutput> {
         UIApplication.shared.delegate!.window!!.machine
     }
     
-    func map(state: AppState) -> UILayerState {
-        .init(text: "\(state.value)")
+    func map(input: AppEvent) -> Ward<UILayerInput> {
+        .set(.init(text: "\(input)"))
     }
     
-    func map(event: UILayerEvent) -> AppEvent {
-        switch event {
+    func map(output: UILayerOutput) -> Ward<AppEvent> {
+        switch output {
         case .click:
-            return .click
+            return .set(.click)
         }
     }
 }

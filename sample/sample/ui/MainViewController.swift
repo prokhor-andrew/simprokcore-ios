@@ -51,12 +51,12 @@ final class MainViewController: UIViewController {
 }
 
 extension MainViewController: ChildMachine {
-    typealias Input = UILayerState
-    typealias Output = UILayerEvent
+    typealias Input = UILayerInput
+    typealias Output = UILayerOutput
     
     var queue: MachineQueue { .main }
     
-    func process(input: UILayerState?, callback: @escaping Handler<UILayerEvent>) {
+    func process(input: UILayerInput?, callback: @escaping Handler<UILayerOutput>) {
         label.text = "\(input?.text ?? "loading")"
         listener = { callback(.click) }
     }

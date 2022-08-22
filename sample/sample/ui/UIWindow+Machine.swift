@@ -10,8 +10,8 @@ import UIKit
 
 
 extension UIWindow: ParentMachine {
-    public typealias Input = UILayerState
-    public typealias Output = UILayerEvent
+    public typealias Input = UILayerInput
+    public typealias Output = UILayerOutput
     
     public var child: Machine<Input, Output> {
         if let rootVC = rootViewController as? MainViewController {

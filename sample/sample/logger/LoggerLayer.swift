@@ -15,7 +15,12 @@ struct LoggerLayer: ConsumerLayer {
         ~LoggerMachine()
     }
     
-    func map(state: AppState) -> String {
-        "\(state.value)"
+    func map(input: AppEvent) -> Ward<String> {
+        switch input {
+        case .click:
+            return .set("click")
+        case .storage(let value):
+            return .set("storage with \(value)")
+        }
     }
 }

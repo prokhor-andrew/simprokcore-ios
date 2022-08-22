@@ -10,18 +10,18 @@ import Foundation
 
 
 extension UserDefaults: ChildMachine {
-    public typealias Input = StorageLayerState
-    public typealias Output = StorageLayerEvent
+    public typealias Input = StorageLayerInput
+    public typealias Output = StorageLayerOutput
     
     public var queue: MachineQueue { .main }
     
     private var key: String { "storage" }
     
     public func process(input: Input?, callback: @escaping Handler<Output>) {
-        if let input = input {
-            set(input.value, forKey: key)
+        if input != nil {
+            // nothing
         } else {
-            callback(.init(integer(forKey: key)))
+            callback(.init(self.integer(forKey: key)))
         }
     }
 }

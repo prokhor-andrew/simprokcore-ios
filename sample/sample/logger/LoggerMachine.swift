@@ -9,7 +9,7 @@ import Foundation
 import simprokmachine
 
 
-class LoggerMachine: ChildMachine {
+final class LoggerMachine: ChildMachine {
     typealias Input = String
     typealias Output = Void
     

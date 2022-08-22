@@ -8,7 +8,7 @@
 import Foundation
 
 
-enum AppEvent {
+enum AppEvent: Equatable {
     case storage(Int)
     case click
 }
