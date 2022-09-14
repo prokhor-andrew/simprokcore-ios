@@ -1,20 +1,18 @@
 //
-//  Or.swift
+//  Split.swift
 //  simprokcore
 //
 //  Created by Andrey Prokhorenko on 01.12.2021.
 //  Copyright (c) 2022 simprok. All rights reserved.
 
-import Foundation
 
-
-public func or<Event>(_ states: @autoclosure @escaping () -> [State<Event>]) -> State<Event> {
-    State.or(states())
+public func split<Event>(_ states: @autoclosure @escaping () -> [State<Event>]) -> State<Event> {
+    State.split(states())
 }
 
 public extension State {
     
-    static func or(
+    static func split(
         _ states: @autoclosure @escaping () -> [State<Event>]
     ) -> State<Event> {
         State<Event> { event in
@@ -30,11 +28,19 @@ public extension State {
             return .skip
         }
     }
+    
+    func or(_ state: @autoclosure @escaping () -> State<Event>) -> State<Event> {
+        .split([self, state()])
+    }
+    
+    func or(_ states: @autoclosure @escaping () -> [State<Event>]) -> State<Event> {
+        .split(states().copy(add: self))
+    }
 }
 
 public extension StateBuilder {
     
-    func or(_ states: @autoclosure @escaping () -> [State<Event>]) -> State<Event> {
-        link(to: State.or(states()))
+    func split(_ states: @autoclosure @escaping () -> [State<Event>]) -> State<Event> {
+        link(to: State.split(states()))
     }
 }
