@@ -12,14 +12,14 @@ public func `while`<Event: Equatable>(
     is event: @autoclosure @escaping Supplier<Event>,
     next state: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
-    .while(is: event(), next: state())
+    State<Event>.while(is: event(), next: state())
 }
 
 public func `while`<Event>(
     is condition: @autoclosure @escaping Supplier<Condition<Event>>,
     next state: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
-    .while(is: condition(), next: state())
+    State<Event>.while(is: condition(), next: state())
 }
 
 public extension State {

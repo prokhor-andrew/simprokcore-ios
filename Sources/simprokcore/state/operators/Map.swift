@@ -13,7 +13,7 @@ public func map<Event, T>(
     _ state: State<Event>,
     function: @escaping Mapper<T, Transition<Event>>
 ) -> State<T> {
-    state.map(function)
+    State<Event>.map(state, function: function)
 }
 
 

@@ -28,3 +28,21 @@ public extension State where Event: CoreEvent {
         }
     }
 }
+
+public extension State {
+    
+    static func register<E: CoreEvent>(
+        _ state: State<E>,
+        function: @escaping Mapper<E, Transition<StateWrapper<Event>>>
+    ) -> State<Event> where E.Event == Event {
+        state.register(function: function)
+    }
+}
+
+
+public func register<Event: CoreEvent>(
+    _ state: State<Event>,
+    function: @escaping Mapper<Event, Transition<StateWrapper<Event.Event>>>
+) -> State<Event.Event> {
+    State.register(state, function: function)
+}

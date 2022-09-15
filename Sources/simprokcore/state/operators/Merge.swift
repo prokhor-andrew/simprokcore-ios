@@ -9,16 +9,16 @@ import simprokmachine
 
 
 public func merge<Event>(
-    _ states: @autoclosure @escaping () -> [State<Event>]
+    _ states: @autoclosure @escaping Supplier<[State<Event>]>
 ) -> State<Event> {
-    State.merge(states())
+    State<Event>.merge(states())
 }
 
 
 public extension State {
     
     static func merge(
-        _ states: @autoclosure @escaping () -> [State<Event>]
+        _ states: @autoclosure @escaping Supplier<[State<Event>]>
     ) -> State<Event> {
         State<Event> { event in
             var skippable = true
@@ -36,19 +36,19 @@ public extension State {
         }
     }
     
-    func and(_ state: @autoclosure @escaping () -> State<Event>) -> State<Event> {
-        State.merge([self, state()])
+    func and(_ state: @autoclosure @escaping Supplier<State<Event>>) -> State<Event> {
+        State<Event>.merge([self, state()])
     }
     
-    func and(_ states: @autoclosure @escaping () -> [State<Event>]) -> State<Event> {
-        State.merge(states().copy(add: self))
+    func and(_ states: @autoclosure @escaping Supplier<[State<Event>]>) -> State<Event> {
+        State<Event>.merge(states().copy(add: self))
     }
 }
 
 
 public extension StateBuilder {
     
-    func merge(_ states: @autoclosure @escaping () -> [State<Event>]) -> State<Event> {
+    func merge(_ states: @autoclosure @escaping Supplier<[State<Event>]>) -> State<Event> {
         link(to: State.merge(states()))
     }
 }

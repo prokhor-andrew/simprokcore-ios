@@ -16,6 +16,13 @@ public extension State {
         register(sub: .final(), function: function)
     }
     
+    static func register(
+        _ state: State<Event>,
+        function: @escaping Mapper<Event, Transition<State<Event>>>
+    ) -> State<Event> {
+        state.register(function: function)
+    }
+    
     private func register(
         sub: State<Event>,
         function: @escaping Mapper<Event, Transition<State<Event>>>
@@ -34,6 +41,13 @@ public extension State {
             }
         }.and(sub)
     }
+}
+
+public func register<Event>(
+    _ state: State<Event>,
+    function: @escaping Mapper<Event, Transition<State<Event>>>
+) -> State<Event> {
+    State<Event>.register(state, function: function)
 }
 
 

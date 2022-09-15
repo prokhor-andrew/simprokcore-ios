@@ -42,13 +42,13 @@ public func reduce<S, Event>(
     _ initial: S,
     function: @escaping BiMapper<S, Event, Transition<S>>
 ) -> State<Event> {
-    State.reduce(initial, function: function)
+    State<Event>.reduce(initial, function: function)
 }
 
 public func reduce<S, Event>(
     function: @escaping BiMapper<S?, Event, Transition<S>>
 ) -> State<Event> {
-    State.reduce(function: function)
+    State<Event>.reduce(function: function)
 }
 
 public extension StateBuilder {

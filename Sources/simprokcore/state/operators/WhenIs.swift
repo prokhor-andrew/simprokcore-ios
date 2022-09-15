@@ -12,14 +12,14 @@ public func when<Event: Equatable>(
     is event: @autoclosure @escaping Supplier<Event>,
     next state: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
-    .when(is: event(), next: state())
+    State<Event>.when(is: event(), next: state())
 }
 
 public func when<Event>(
     is condition: @autoclosure @escaping Supplier<Condition<Event>>,
     next state: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
-    .when(is: condition(), next: state())
+    State<Event>.when(is: condition(), next: state())
 }
 
 

@@ -12,14 +12,14 @@ public func until<Event: Equatable>(
     not event: @autoclosure @escaping Supplier<Event>,
     next state: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
-    .until(not: event(), next: state())
+    State<Event>.until(not: event(), next: state())
 }
 
 public func until<Event>(
     not condition: @autoclosure @escaping Supplier<Condition<Event>>,
     next state: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
-    .until(not: condition(), next: state())
+    State<Event>.until(not: condition(), next: state())
 }
 
 
@@ -30,13 +30,13 @@ public extension State {
         not event: @autoclosure @escaping Supplier<Event>,
         next state: @autoclosure @escaping Supplier<State<Event>>
     ) -> State<Event> {
-        `while`(is: event(), next: state())
+        State<Event>.`while`(is: event(), next: state())
     }
 
     static func until<Event>(
         not condition: @autoclosure @escaping Supplier<Condition<Event>>,
         next state: @autoclosure @escaping Supplier<State<Event>>
     ) -> State<Event> {
-        `while`(is: condition(), next: state())
+        State<Event>.`while`(is: condition(), next: state())
     }
 }

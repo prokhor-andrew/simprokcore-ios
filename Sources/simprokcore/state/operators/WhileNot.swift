@@ -12,14 +12,14 @@ public func `while`<Event: Equatable>(
     not event: @autoclosure @escaping Supplier<Event>,
     next state: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
-    .while(not: event(), next: state())
+    State<Event>.while(not: event(), next: state())
 }
 
 public func `while`<Event>(
     not condition: @autoclosure @escaping Supplier<Condition<Event>>,
     next state: @autoclosure @escaping Supplier<State<Event>>
 ) -> State<Event> {
-    .while(not: condition(), next: state())
+    State<Event>.while(not: condition(), next: state())
 }
 
 
