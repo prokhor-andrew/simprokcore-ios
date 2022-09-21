@@ -6,94 +6,54 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 
 import simprokmachine
+import simproktools
 
 
 /// A general structure that describes a type that represents a layer object.
 public struct Layer<Event> {
 
-    internal let machine: Machine<StateAction<Event>, StateAction<Event>>
+    internal let machine: Machine<Event, Event>
 
     private init<Input, Output>(
         _ machine: Machine<Input, Output>,
         stateMapper: @escaping Mapper<Event, Ward<Input>>,
         eventMapper: @escaping Mapper<Output, Ward<Event>>
     ) {
-        self.machine = machine.inward {
-            switch $0 {
-            case .stateWillUpdate:
-                return .set()
-            case .stateDidUpdate(let state):
-                return stateMapper(state)
-            }
-        }
-        .outward { .set(eventMapper($0).values.map { .stateWillUpdate($0) }) }
+        self.machine = machine.inward { stateMapper($0) }.outward { eventMapper($0) }
     }
 
     private init<Input, Output>(
         _ machine: Machine<Input, Output>,
         mapper: @escaping Mapper<Event, Ward<Input>>
     ) {
-        self.machine = machine.outward { _ in .set() }.inward {
-            switch $0 {
-            case .stateWillUpdate:
-                return .set()
-            case .stateDidUpdate(let state):
-                return mapper(state)
-            }
-        }
+        self.machine = machine.outward { _ in .set() }.inward { mapper($0) }
     }
     
     private init<Input, Output>(
         _ machine: Machine<Input, Output>,
         mapper: @escaping Mapper<Output, Ward<Event>>
     ) {
-        self.machine = machine.inward { _ in .set() }.outward {
-            .set(mapper($0).values.map { .stateWillUpdate($0) })
-        }
+        self.machine = machine.inward { _ in .set() }.outward { mapper($0) }
     }
         
     private init<Output>(
         _ machine: Machine<Event, Output>,
         mapper: @escaping Mapper<Output, Ward<Event>>
     ) {
-        self.machine = machine.inward {
-            switch $0 {
-            case .stateWillUpdate:
-                return .set()
-            case .stateDidUpdate(let state):
-                return .set(state)
-            }
-        }
-        .outward { event in .set(mapper(event).values.map { .stateWillUpdate($0) }) }
+        self.machine = machine.inward { .set($0) }.outward { mapper($0) }
     }
     
     private init<Input>(
         _ machine: Machine<Input, Event>,
         mapper: @escaping Mapper<Event, Ward<Input>>
     ) {
-        self.machine = machine.inward {
-            switch $0 {
-            case .stateWillUpdate:
-                return .set()
-            case .stateDidUpdate(let state):
-                return mapper(state)
-            }
-        }
-        .outward { event in .set(.stateWillUpdate(event)) }
+        self.machine = machine.inward { mapper($0) }.outward { .set($0) }
     }
     
     private init(
         _ machine: Machine<Event, Event>
     ) {
-        self.machine = machine.inward {
-            switch $0 {
-            case .stateWillUpdate:
-                return .set()
-            case .stateDidUpdate(let state):
-                return .set(state)
-            }
-        }
-        .outward { event in .set(.stateWillUpdate(event)) }
+        self.machine = machine.inward { .set($0) }.outward { .set($0) }
     }
     
     

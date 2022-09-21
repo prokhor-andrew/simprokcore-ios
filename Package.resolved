@@ -6,8 +6,17 @@
         "repositoryURL": "https://github.com/simprok-dev/simprokmachine-ios.git",
         "state": {
           "branch": null,
-          "revision": "3a863a3de845cdc9cf1d287a83ab27cb29fffa4f",
-          "version": "1.1.2"
+          "revision": "b329e8ec0ddcad70bd0eba54c1d1bfa3e17322ef",
+          "version": "1.1.8"
+        }
+      },
+      {
+        "package": "simproktools",
+        "repositoryURL": "https://github.com/simprok-dev/simproktools-ios.git",
+        "state": {
+          "branch": null,
+          "revision": "a6b51f5137477ff7a9eb9d0f6f69d6dd06c14346",
+          "version": "1.1.3"
         }
       }
     ]
