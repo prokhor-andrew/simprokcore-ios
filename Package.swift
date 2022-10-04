@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -13,15 +13,13 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            name: "simprokmachine",
             url: "https://github.com/simprok-dev/simprokmachine-ios.git",
-            .exactItem(.init(1, 1, 8))
+            exact: .init(1, 1, 8)
         ),
         .package(
-            name: "simproktools",
-            url: "https://github.com/simprok-dev/simproktools-ios.git",
-            .exactItem(.init(1, 1, 3))
-        )
+            url: "https://github.com/simprok-dev/simprokcontroller-ios.git",
+            exact: .init(1, 0, 0)
+        ),
     ],
     targets: [
         .target(
@@ -29,11 +27,11 @@ let package = Package(
             dependencies: [
                 .product(
                     name: "simprokmachine",
-                    package: "simprokmachine"
+                    package: "simprokmachine-ios"
                 ),
                 .product(
-                    name: "simproktools",
-                    package: "simproktools"
+                    name: "simprokcontroller",
+                    package: "simprokcontroller-ios"
                 )
             ]
         )

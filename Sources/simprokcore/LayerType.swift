@@ -6,30 +6,19 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 
 import simprokmachine
-import simproktools
-
 
 
 public protocol LayerType {
     associatedtype Event
-    associatedtype Input
-    associatedtype Output
     
-    
-    var machine: Machine<Input, Output> { get }
-
-    
-    func map(input: Event) -> Ward<Input>
-    
-    
-    func map(output: Output) -> Ward<Event>
+    var machine: Machine<Event, Event> { get }
 }
 
 public extension LayerType {
     
     /// An equivalent to Layer.layer(self)
     var layer: Layer<Event> {
-        Layer.layer(self)
+        Layer(self)
     }
 }
 

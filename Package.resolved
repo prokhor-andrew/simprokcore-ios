@@ -1,25 +1,23 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "simprokmachine",
-        "repositoryURL": "https://github.com/simprok-dev/simprokmachine-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "b329e8ec0ddcad70bd0eba54c1d1bfa3e17322ef",
-          "version": "1.1.8"
-        }
-      },
-      {
-        "package": "simproktools",
-        "repositoryURL": "https://github.com/simprok-dev/simproktools-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "a6b51f5137477ff7a9eb9d0f6f69d6dd06c14346",
-          "version": "1.1.3"
-        }
+  "pins" : [
+    {
+      "identity" : "simprokcontroller-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/simprok-dev/simprokcontroller-ios.git",
+      "state" : {
+        "revision" : "d80480cd895a7622723087baad1295537f7f3c5c",
+        "version" : "1.0.0"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "simprokmachine-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/simprok-dev/simprokmachine-ios.git",
+      "state" : {
+        "revision" : "b329e8ec0ddcad70bd0eba54c1d1bfa3e17322ef",
+        "version" : "1.1.8"
+      }
+    }
+  ],
+  "version" : 2
 }

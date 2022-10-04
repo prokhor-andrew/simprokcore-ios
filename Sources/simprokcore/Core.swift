@@ -6,7 +6,7 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 
 import simprokmachine
-import simproktools
+import simprokcontroller
 
 
 /// A `RootMachine` protocol that describes all the layers of the application.
@@ -22,10 +22,10 @@ public extension Core {
     
     var child: Machine<Event, Event> {
         Machine.merge(layers.map { $0.machine }).controller(feature) { event in
-            .set(
+            [
                 .ext(event),
                 .int(event)
-            )
+            ]
         }
     }
 }
