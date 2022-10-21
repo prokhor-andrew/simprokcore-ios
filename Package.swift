@@ -18,7 +18,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/simprok-dev/simprokcontroller-ios.git",
-            exact: .init(1, 0, 0)
+            exact: .init(1, 0, 1)
         ),
     ],
     targets: [
