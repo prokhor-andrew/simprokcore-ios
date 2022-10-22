@@ -9,9 +9,9 @@ import simprokmachine
 
 
 /// A general structure that describes a type that represents a layer object.
-public struct Layer<Event> {
+public struct Layer<Event>: LayerType {
 
-    internal let machine: Machine<Event, Event>
+    public let machine: Machine<Event, Event>
 
     public init<L: LayerType>(_ layer: L) where L.Event == Event {
         self.machine = layer.machine
