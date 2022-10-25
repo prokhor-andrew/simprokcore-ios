@@ -16,10 +16,6 @@ let package = Package(
             url: "https://github.com/simprok-dev/simprokmachine-ios.git",
             exact: .init(1, 1, 8)
         ),
-        .package(
-            url: "https://github.com/simprok-dev/simprokcontroller-ios.git",
-            exact: .init(1, 0, 1)
-        ),
     ],
     targets: [
         .target(
@@ -28,10 +24,6 @@ let package = Package(
                 .product(
                     name: "simprokmachine",
                     package: "simprokmachine-ios"
-                ),
-                .product(
-                    name: "simprokcontroller",
-                    package: "simprokcontroller-ios"
                 )
             ]
         )
