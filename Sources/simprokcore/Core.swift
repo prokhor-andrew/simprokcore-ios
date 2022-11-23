@@ -9,18 +9,19 @@ import simprokmachine
 
 
 /// A `RootMachine` protocol that describes all the layers of the application.
-public protocol Core: RootMachine where Input == Event, Output == Event {
+public protocol Core: RootMachine where Input == Event, Output == Event, AppFeature.Event == Event {
+    associatedtype AppFeature: Feature
     associatedtype Event
     
     var layers: [Layer<Event>] { get }
     
-    var feature: State<Event> { get }
+    var feature: AppFeature { get }
 }
 
 public extension Core {
     
-    var child: Machine<Event, Event> {
-        Machine.merge(layers.map { $0.machine }).controller(.set(feature, outputs: [])) { state, event in
+    var child: Machine<AppFeature.Event, AppFeature.Event> {
+        Machine.merge(layers.map { $0.machine }).controller(.set(feature.scenario(), outputs: [])) { state, event in
             switch event {
             case .ext(let value), .int(let value):
                 switch state.transit(value) {
