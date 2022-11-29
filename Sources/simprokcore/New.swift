@@ -92,6 +92,14 @@ public protocol DomainGateType {
     func outward(_ output: Feature) -> [Domain]
 }
 
+public protocol DomainGatePassable {
+    associatedtype Domain
+    
+    static func map(input: Domain) -> [Self]
+    
+    static func map(output: Self) -> [Domain]
+}
+
 public struct DomainGate<Domain, Feature>: DomainGateType {
     
     public let inward: Mapper<Domain, [Feature]>
@@ -126,6 +134,14 @@ public struct Gateway<Domain, Input, Output> {
     ) {
         self.inward = inward
         self.outward = outward
+    }
+    
+    public init<LG: LayerGateType>(_ gate: LG) where LG.Input == Input, LG.Output == Output, LG.Feature: DomainGatePassable, LG.Feature.Domain == Domain {
+        let gateway = gate + DomainGate(
+            inward: { LG.Feature.map(input: $0) },
+            outward: { LG.Feature.map(output: $0) }
+        )
+        self.init(inward: gateway.inward, outward: gateway.outward)
     }
 }
 
@@ -166,163 +182,3 @@ public extension MachineType {
     }
 }
 
-
-
-struct MyInput1 {
-    
-}
-
-struct MyOutput1 {
-    
-}
-
-struct MyInput2 {
-    
-}
-
-struct MyOutput2 {
-    
-}
-
-struct MyFeatureA {
-    
-    struct Module1Gate: LayerGateType {
-        typealias Feature = MyFeatureA
-        typealias Input = MyInput1
-        typealias Output = MyOutput1
-        
-        func inward(_ input: MyFeatureA) -> [MyInput1] {
-            []
-        }
-        
-        func outward(_ output: MyOutput1) -> [MyFeatureA] {
-            []
-        }
-    }
-    
-    struct Module2Gate: LayerGateType {
-        typealias Feature = MyFeatureA
-        typealias Input = MyInput2
-        typealias Output = MyOutput2
-        
-        func inward(_ input: MyFeatureA) -> [MyInput2] {
-            []
-        }
-        
-        func outward(_ output: MyOutput2) -> [MyFeatureA] {
-            []
-        }
-    }
-}
-
-struct MyFeatureB {
-    
-    struct Module1Gate: LayerGateType {
-        typealias Feature = MyFeatureB
-        typealias Input = MyInput1
-        typealias Output = MyOutput1
-        
-        func inward(_ input: MyFeatureB) -> [MyInput1] {
-            []
-        }
-        
-        func outward(_ output: MyOutput1) -> [MyFeatureB] {
-            []
-        }
-    }
-    
-    struct Module2Gate: LayerGateType {
-        typealias Feature = MyFeatureB
-        typealias Input = MyInput2
-        typealias Output = MyOutput2
-        
-        func inward(_ input: MyFeatureB) -> [MyInput2] {
-            []
-        }
-        
-        func outward(_ output: MyOutput2) -> [MyFeatureB] {
-            []
-        }
-    }
-}
-
-struct Module1: ModuleType {
-    typealias Domain = MyApp
-    typealias Input = MyInput1
-    typealias Output = MyOutput1
-    
-    
-    var machine: Machine<MyInput1, MyOutput1> {
-        fatalError()
-    }
-    
-    var gateways: [Gateway<MyApp, MyInput1, MyOutput1>] {[
-        MyFeatureA.Module1Gate() + MyApp.MyFeatureAGate(),
-        MyFeatureB.Module1Gate() + MyApp.MyFeatureBGate()
-    ]}
-}
-
-struct Module2: ModuleType {
-    typealias Domain = MyApp
-    typealias Input = MyInput2
-    typealias Output = MyOutput2
-    
-    var machine: Machine<MyInput2, MyOutput2> {
-        fatalError()
-    }
-    
-    var gateways: [Gateway<MyApp, MyInput2, MyOutput2>] {[
-        MyFeatureA.Module2Gate() + MyApp.MyFeatureAGate(),
-        MyFeatureB.Module2Gate() + MyApp.MyFeatureBGate()
-    ]}
-}
-
-struct MyApp {
-    
-    struct MyFeatureAGate: DomainGateType {
-        typealias Domain = MyApp
-        typealias Feature = MyFeatureA
-        
-        func inward(_ input: MyApp) -> [MyFeatureA] {
-            []
-        }
-        
-        func outward(_ output: MyFeatureA) -> [MyApp] {
-            []
-        }
-    }
-    
-    struct MyFeatureBGate: DomainGateType {
-        typealias Domain = MyApp
-        typealias Feature = MyFeatureB
-        
-        func inward(_ input: MyApp) -> [MyFeatureB] {
-            []
-        }
-        
-        func outward(_ output: MyFeatureB) -> [MyApp] {
-            []
-        }
-    }
-}
-
-struct MyAppFeature: Feature {
-    typealias Event = MyApp
-    
-    func scenario() -> State<MyApp> {
-        final()
-    }
-}
-
-class MyCore: Core {
-    typealias Event = MyApp
-    
-    var layers: [Module<MyApp>] {[
-        ~Module1(),
-        ~Module2()
-    ]}
-    
-    var feature: MyAppFeature {
-        .init()
-    }
-}
