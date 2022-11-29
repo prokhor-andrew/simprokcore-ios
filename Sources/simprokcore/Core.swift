@@ -13,7 +13,7 @@ public protocol Core: RootMachine where Input == Event, Output == Event, AppFeat
     associatedtype AppFeature: Feature
     associatedtype Event
     
-    var layers: [Layer<Event>] { get }
+    var layers: [Module<Event>] { get }
     
     var feature: AppFeature { get }
 }
