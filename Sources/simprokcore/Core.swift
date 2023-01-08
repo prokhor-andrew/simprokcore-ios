@@ -8,29 +8,29 @@
 import simprokmachine
 
 
-/// A `RootMachine` protocol that describes all the layers of the application.
-public protocol Core: RootMachine where Input == Event, Output == Event, AppFeature.Event == Event {
-    associatedtype AppFeature: Feature
-    associatedtype Event
-    
-    var layers: [Module<Event>] { get }
-    
-    var feature: AppFeature { get }
-}
-
-public extension Core {
-    
-    var child: Machine<AppFeature.Event, AppFeature.Event> {
-        Machine.merge(layers.map { $0.machine }).controller(.set(feature.scenario(), outputs: [])) { state, event in
-            switch event {
-            case .ext(let value), .int(let value):
-                switch state.transit(value) {
-                case .skip:
-                    return .set(state, outputs: [])
-                case .set(let new):
-                    return .set(new, outputs: .ext(value), .int(value))
-                }
-            }
-        }
-    }
-}
+///// A `RootMachine` protocol that describes all the layers of the application.
+//public protocol Core {
+//    associatedtype AppFeature: Feature
+//    associatedtype Event
+//    
+//    var layers: [Module<Event>] { get }
+//    
+//    var feature: AppFeature { get }
+//}
+//
+//public extension Core {
+//    
+//    var child: Machine<AppFeature.Event, AppFeature.Event> {
+//        Machine.merge(layers.map { $0.machine }).controller(.set(feature.scenario(), outputs: [])) { state, event in
+//            switch event {
+//            case .ext(let value), .int(let value):
+//                switch state.transit(value) {
+//                case .skip:
+//                    return .set(state, outputs: [])
+//                case .set(let new):
+//                    return .set(new, outputs: .ext(value), .int(value))
+//                }
+//            }
+//        }
+//    }
+//}

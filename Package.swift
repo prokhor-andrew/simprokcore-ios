@@ -9,21 +9,21 @@ let package = Package(
         .library(
             name: "simprokcore",
             targets: ["simprokcore"]
-        ),
+        )
     ],
     dependencies: [
         .package(
-            url: "https://github.com/simprok-dev/simprokmachine-ios.git",
-            exact: .init(1, 1, 8)
-        ),
+            url: "https://github.com/simprok-dev/simprokstate-ios.git",
+            exact: .init(1, 0, 2)
+        )
     ],
     targets: [
         .target(
             name: "simprokcore",
             dependencies: [
                 .product(
-                    name: "simprokmachine",
-                    package: "simprokmachine-ios"
+                    name: "simprokstate",
+                    package: "simprokstate-ios"
                 )
             ]
         )
