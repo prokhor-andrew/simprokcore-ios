@@ -8,15 +8,15 @@
 import simprokmachine
 
 
-///// A `RootMachine` protocol that describes all the layers of the application.
-//public protocol Core {
+/// A `RootMachine` protocol that describes all the layers of the application.
+public protocol Core {
 //    associatedtype AppFeature: Feature
-//    associatedtype Event
-//    
-//    var layers: [Module<Event>] { get }
-//    
+    associatedtype AppEvent
+    
+    var layers: Modules<AppEvent> { get }
+    
 //    var feature: AppFeature { get }
-//}
+}
 //
 //public extension Core {
 //    
@@ -34,3 +34,7 @@ import simprokmachine
 //        }
 //    }
 //}
+
+public struct Modules<AppEvent> {
+    
+}
