@@ -10,7 +10,7 @@ import simprokmachine
 
 public protocol Module {
     associatedtype AppEvent
-    associatedtype Child: Machine
+    associatedtype Child: Automaton
 
     var machine: Child { get }
     

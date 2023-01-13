@@ -24,8 +24,8 @@ internal func _start<
     
     // subscribe to a machine merged from modules
     
-    let moduled: [ParentAutomaton<CoreEvent<AppEvent>, CoreEvent<AppEvent>>] = modules.machines.map {
-        ParentAutomaton($0.outward { [.fromModule($0)] }.inward {
+    let moduled: [ParentMachine<CoreEvent<AppEvent>, CoreEvent<AppEvent>>] = modules.machines.map {
+        ParentMachine($0.outward { [.fromModule($0)] }.inward {
             switch $0 {
             case .fromReducer(let event):
                 return [event]
@@ -35,7 +35,7 @@ internal func _start<
         })
     }
     
-    let reducer: ParentAutomaton<CoreEvent<AppEvent>, CoreEvent<AppEvent>> = ParentAutomaton(FeatureAutomaton(FeatureTransition(feature)).outward {
+    let reducer: ParentMachine<CoreEvent<AppEvent>, CoreEvent<AppEvent>> = ParentMachine(FeatureMachine(FeatureTransition(feature)).outward {
         [.fromReducer($0)]
     }.inward {
         switch $0 {
@@ -47,11 +47,11 @@ internal func _start<
     })
     
     // it is important to save it into an array above the "state()" function
-    let machines: [ParentAutomaton<CoreEvent<AppEvent>, CoreEvent<AppEvent>>] = moduled.copy(add: reducer)
+    let machines: Machines<CoreEvent<AppEvent>, CoreEvent<AppEvent>> = Machines(moduled.copy(add: reducer))
     
     func state() -> FeatureSelfishObject<CoreEvent<AppEvent>, CoreEvent<AppEvent>, CoreEvent<AppEvent>, CoreEvent<AppEvent>> {
-        FeatureSelfishObject(machines: machines) {
-            switch $0 {
+        FeatureSelfishObject(machines: machines) { _, event in
+            switch event {
             case .ext:
                 return nil
             case .int(let value):
@@ -60,7 +60,7 @@ internal func _start<
         }
     }
     
-    subscriptions[ObjectIdentifier(sender)] = FeatureAutomaton(FeatureTransition(state())).subscribe { _,_ in }
+    subscriptions[ObjectIdentifier(sender)] = FeatureMachine(FeatureTransition(state())).subscribe { _,_ in }
 }
 
 internal func _stop(_ sender: AnyObject) {

@@ -9,11 +9,11 @@ import simprokmachine
 import simprokstate
 
 
-internal extension Machine {
+internal extension Automaton {
     
-    func inward<ParentInput>(_ function: @escaping Mapper<ParentInput, [Input]>) -> FeatureAutomaton<Output, Input, ParentInput, Output> {
+    func inward<ParentInput>(_ function: @escaping Mapper<ParentInput, [Input]>) -> FeatureMachine<Output, Input, ParentInput, Output> {
         func feature() -> FeatureSelfishObject<Output, Input, ParentInput, Output> {
-            FeatureSelfishObject(machines: [ParentAutomaton(self)]) { event in
+            FeatureSelfishObject(machines: Machines { ParentMachine(self) }) { _, event in
                 switch event {
                 case .int(let value):
                     return FeatureTransition(feature(), effects: .ext(value))
@@ -23,12 +23,12 @@ internal extension Machine {
             }
         }
         
-        return FeatureAutomaton(FeatureTransition(feature()))
+        return FeatureMachine(FeatureTransition(feature()))
     }
     
-    func outward<ParentOutput>(_ function: @escaping Mapper<Output, [ParentOutput]>) -> FeatureAutomaton<Output, Input, Input, ParentOutput> {
+    func outward<ParentOutput>(_ function: @escaping Mapper<Output, [ParentOutput]>) -> FeatureMachine<Output, Input, Input, ParentOutput> {
         func feature() -> FeatureSelfishObject<Output, Input, Input, ParentOutput> {
-            FeatureSelfishObject(machines: [ParentAutomaton(self)]) { event in
+            FeatureSelfishObject(machines: Machines { ParentMachine(self) }) { _, event in
                 switch event {
                 case .int(let value):
                     return FeatureTransition(feature(), effects: function(value).map { .ext($0) })
@@ -38,6 +38,6 @@ internal extension Machine {
             }
         }
         
-        return FeatureAutomaton(FeatureTransition(feature()))
+        return FeatureMachine(FeatureTransition(feature()))
     }
 }

@@ -9,7 +9,7 @@ import simprokstate
 
 public protocol Core: AnyObject {
     associatedtype AppEvent
-    associatedtype AppFeature: DomainFeatureMildProtocol where AppFeature.ExternalTrigger == AppEvent, AppFeature.ExternalEffect == AppEvent
+    associatedtype AppFeature: CoreFeature where AppFeature.ExternalTrigger == AppEvent, AppFeature.ExternalEffect == AppEvent
     
     
     var modules: Modules<AppEvent> { get }
