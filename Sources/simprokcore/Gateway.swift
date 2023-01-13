@@ -20,13 +20,18 @@ public struct Gateway<AppEvent, Input, Output> {
         self.inward = inward
         self.outward = outward
     }
-
-    public init<CG: CoreGate, MG: MachineGate>(core: CG, machine: MG) where CG.Feature == MG.Feature, CG.AppEvent == AppEvent, MG.Input == Input, MG.Output == Output {
-        self.inward = { core.inward($0).flatMap { value in machine.inward(value) } }
-        self.outward = { machine.outward($0).flatMap { value in core.outward(value) } }
-    }
 }
 
+
+public extension Gateway {
+    
+    init<CG: CoreGate, MG: MachineGate>(core: CG, machine: MG) where CG.Feature == MG.Feature, CG.AppEvent == AppEvent, MG.Input == Input, MG.Output == Output {
+        self.init(
+            inward: { core.inward($0).flatMap { value in machine.inward(value) } },
+            outward: { machine.outward($0).flatMap { value in core.outward(value) } }
+        )
+    }
+}
 
 public func +<CG: CoreGate, MG: MachineGate>(lhs: CG, rhs: MG) -> Gateway<CG.AppEvent, MG.Input, MG.Output> where CG.Feature == MG.Feature {
     Gateway(core: lhs, machine: rhs)

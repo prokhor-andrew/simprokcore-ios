@@ -8,16 +8,6 @@
 import Foundation
 
 
-internal extension Dictionary {
-    
-    func copyAdd(key: Key, element: Value) -> Dictionary<Key, Value> {
-        var copied = self
-        copied[key] = element
-        return copied
-    }
-}
-
-
 internal extension Array {
     
     func copy(add value: Element) -> Array<Element> {

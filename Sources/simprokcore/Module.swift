@@ -14,5 +14,5 @@ public protocol Module {
 
     var machine: Child { get }
     
-    var gateways: [Gateway<AppEvent, Child.Input, Child.Output>] { get }
+    var gateways: Gateways<AppEvent, Child.Input, Child.Output> { get }
 }
