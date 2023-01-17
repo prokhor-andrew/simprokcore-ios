@@ -11,7 +11,7 @@ import simprokmachine
 
 public struct Gateways<AppEvent, Input, Output> {
     
-    public let array: [Gateway<AppEvent, Input, Output>]
+    internal let array: [Gateway<AppEvent, Input, Output>]
     
     public init(@GatewaysBuilder<AppEvent, Input, Output> _ build: Supplier<[Gateway<AppEvent, Input, Output>]>) {
         self.init(build())

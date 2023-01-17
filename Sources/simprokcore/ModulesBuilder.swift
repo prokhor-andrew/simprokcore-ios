@@ -4,6 +4,7 @@
 //
 //  Created by Andrey Prokhorenko on 01.12.2021.
 //  Copyright (c) 2022 simprok. All rights reserved.
+//
 
 import simprokmachine
 
@@ -70,8 +71,8 @@ fileprivate extension Module {
             )
         ) { acc, element in
             (
-                { acc.0($0) + element.inward($0) },
-                { acc.1($0) + element.outward($0) }
+                { acc.0($0) + element.mapInput($0) },
+                { acc.1($0) + element.mapOutput($0) }
             )
         }
         

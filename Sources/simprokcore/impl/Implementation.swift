@@ -24,7 +24,7 @@ internal func _start<
     
     // subscribe to a machine merged from modules
     
-    let moduled: [ParentMachine<CoreEvent<AppEvent>, CoreEvent<AppEvent>>] = modules.machines.map {
+    let moduled: [ParentMachine<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>>] = modules.machines.map {
         ParentMachine($0.outward { [.fromModule($0)] }.inward {
             switch $0 {
             case .fromReducer(let event):
@@ -35,7 +35,7 @@ internal func _start<
         })
     }
     
-    let reducer: ParentMachine<CoreEvent<AppEvent>, CoreEvent<AppEvent>> = ParentMachine(FeatureMachine(FeatureTransition(feature)).outward {
+    let reducer: ParentMachine<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>> = ParentMachine(FeatureMachine(FeatureTransition(feature)).outward {
         [.fromReducer($0)]
     }.inward {
         switch $0 {
@@ -47,9 +47,9 @@ internal func _start<
     })
     
     // it is important to save it into an array above the "state()" function
-    let machines: Machines<CoreEvent<AppEvent>, CoreEvent<AppEvent>> = Machines(moduled.copy(add: reducer))
+    let machines: Machines<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>> = Machines(moduled.copy(add: reducer))
     
-    func state() -> FeatureSelfishObject<CoreEvent<AppEvent>, CoreEvent<AppEvent>, CoreEvent<AppEvent>, CoreEvent<AppEvent>> {
+    func state() -> FeatureSelfishObject<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>> {
         FeatureSelfishObject(machines: machines) { _, event in
             switch event {
             case .ext:
