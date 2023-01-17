@@ -1,5 +1,5 @@
 //
-//  Module.swift
+//  ModuleProtocol.swift
 //  simprokcore
 //
 //  Created by Andrey Prokhorenko on 01.12.2021.
@@ -9,7 +9,7 @@
 import simprokmachine
 
 
-public protocol Module {
+public protocol ModuleProtocol {
     associatedtype AppEvent
     associatedtype Child: Automaton
 
