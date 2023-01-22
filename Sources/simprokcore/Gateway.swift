@@ -16,20 +16,33 @@ public struct Gateway<AppEvent, Input, Output> {
 
     internal init<F>(_ machineGate: MachineGate<F, Input, Output>, _ coreGate: CoreGate<AppEvent, F>) {
         self.mapInput = {
-            coreGate.mapInput($0).flatMap { machineGate.mapInput($0) }
+            coreGate.mapInput($0).flatMap {
+                machineGate.mapInput($0)
+            }
         }
         self.mapOutput = {
-            machineGate.mapOutput($0).flatMap { coreGate.mapOutput($0) }
+            machineGate.mapOutput($0).flatMap {
+                coreGate.mapOutput($0)
+            }
         }
     }
 }
 
 
 infix operator &
-public func & <F, AppEvent, Input, Output>(lhs: MachineGate<F, Input, Output>, rhs: CoreGate<AppEvent, F>) -> Gateway<AppEvent, Input, Output> {
+
+public func &<F, AppEvent, Input, Output>(lhs: MachineGate<F, Input, Output>, rhs: CoreGate<AppEvent, F>) -> Gateway<AppEvent, Input, Output> {
     Gateway(lhs, rhs)
 }
 
-public func & <F, AppEvent, Input, Output>(lhs: CoreGate<AppEvent, F>, rhs: MachineGate<F, Input, Output>) -> Gateway<AppEvent, Input, Output> {
+public func &<F, AppEvent, Input, Output>(lhs: CoreGate<AppEvent, F>, rhs: MachineGate<F, Input, Output>) -> Gateway<AppEvent, Input, Output> {
     rhs & lhs
+}
+
+prefix operator ^
+
+public prefix func ^<F: CoreGateProvider, Input, Output>(
+        machineGate: MachineGate<F, Input, Output>
+) -> Gateway<F.Event, Input, Output> {
+    Gateway(machineGate, F.gate)
 }

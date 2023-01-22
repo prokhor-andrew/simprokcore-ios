@@ -10,9 +10,11 @@
 @resultBuilder
 public struct SourceBuilder<AppEvent, Input, Output> {
 
-    private init() {}
-    
+    private init() {
+    }
+
     public static func buildBlock(_ components: Gateway<AppEvent, Input, Output>...) -> [Gateway<AppEvent, Input, Output>] {
         components
     }
+
 }
