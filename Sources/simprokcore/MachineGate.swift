@@ -1,5 +1,5 @@
 //
-//  GateObject.swift
+//  MachineGate.swift
 //  simprokcore
 //
 //  Created by Andrey Prokhorenko on 01.12.2021.
@@ -8,10 +8,10 @@
 
 import simprokmachine
 
-
-public struct GateObject<Feature: CoreEvent, Input, Output>: GateProtocol {
-    public let _mapInput: Mapper<Feature, [Input]>
-    public let _mapOutput: Mapper<Output, [Feature]>
+public struct MachineGate<Feature, Input, Output> {
+    
+    private let _mapInput: Mapper<Feature, [Input]>
+    private let _mapOutput: Mapper<Output, [Feature]>
     
     public init(
         mapInput: @escaping Mapper<Feature, [Input]>,

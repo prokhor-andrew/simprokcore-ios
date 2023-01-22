@@ -14,24 +14,22 @@ public struct Gateway<AppEvent, Input, Output> {
     internal let mapInput: Mapper<AppEvent, [Input]>
     internal let mapOutput: Mapper<Output, [AppEvent]>
 
-    private init(
-        mapInput: @escaping Mapper<AppEvent, [Input]>,
-        mapOutput: @escaping Mapper<Output, [AppEvent]>
-    ) {
-        self.mapInput = mapInput
-        self.mapOutput = mapOutput
+    internal init<F>(_ machineGate: MachineGate<F, Input, Output>, _ coreGate: CoreGate<AppEvent, F>) {
+        self.mapInput = {
+            coreGate.mapInput($0).flatMap { machineGate.mapInput($0) }
+        }
+        self.mapOutput = {
+            machineGate.mapOutput($0).flatMap { coreGate.mapOutput($0) }
+        }
     }
-    
-    public init<M: GateProtocol>(_ gate: M) where M.Input == Input, M.Output == Output, M.Feature.AppEvent == AppEvent {
-        self.init(
-            mapInput: {
-                if let event = M.Feature.init(event: $0) {
-                    return gate.mapInput(event)
-                } else {
-                    return []
-                }
-            },
-            mapOutput: { gate.mapOutput($0).compactMap { $0.event } }
-        )
-    }
+}
+
+
+infix operator &
+public func & <F, AppEvent, Input, Output>(lhs: MachineGate<F, Input, Output>, rhs: CoreGate<AppEvent, F>) -> Gateway<AppEvent, Input, Output> {
+    Gateway(lhs, rhs)
+}
+
+public func & <F, AppEvent, Input, Output>(lhs: CoreGate<AppEvent, F>, rhs: MachineGate<F, Input, Output>) -> Gateway<AppEvent, Input, Output> {
+    rhs & lhs
 }

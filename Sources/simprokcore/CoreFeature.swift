@@ -6,6 +6,7 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 //
 
+
 import simprokstate
 
-public typealias CoreFeature = DomainFeatureMildProtocol 
+public typealias CoreFeature<T> = FeatureObject<T, T, T, T>

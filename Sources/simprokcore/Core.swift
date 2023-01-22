@@ -10,21 +10,19 @@ import simprokstate
 
 public protocol Core: AnyObject {
     associatedtype AppEvent
-    associatedtype AppFeature: CoreFeature where AppFeature.ExternalTrigger == AppEvent, AppFeature.ExternalEffect == AppEvent
     
-    var modules: Modules<AppEvent> { get }
+    var sources: Sources<AppEvent> { get }
     
-    var feature: AppFeature { get }
+    var feature: CoreFeature<AppEvent> { get }
 }
 
 public extension Core {
     
     func start() {
-        _start(sender: self, feature: feature, modules: modules)
+        _start(sender: self, feature: feature, sources: sources)
     }
     
     func stop() {
         _stop(self)
     }
 }
-

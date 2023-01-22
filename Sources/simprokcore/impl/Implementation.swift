@@ -10,47 +10,48 @@ import simprokstate
 
 fileprivate var subscriptions: [ObjectIdentifier: AnyObject] = [:]
 
-internal func _start<
-    AppEvent,
-    AppFeature: DomainFeatureMildProtocol
->(
+internal func _start<AppEvent>(
     sender: AnyObject,
-    feature: AppFeature,
-    modules: Modules<AppEvent>
-) where AppFeature.ExternalTrigger == AppEvent, AppFeature.ExternalEffect == AppEvent {
+    feature: CoreFeature<AppEvent>,
+    sources: Sources<AppEvent>
+) {
     // check if there is already a subscription for this Core
-    
-    if subscriptions[ObjectIdentifier(sender)] != nil { return }
-    
-    // subscribe to a machine merged from modules
-    
-    let moduled: [ParentMachine<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>>] = modules.machines.map {
-        ParentMachine($0.outward { [.fromModule($0)] }.inward {
-            switch $0 {
-            case .fromReducer(let event):
-                return [event]
-            case .fromModule:
-                return []
-            }
-        })
+
+    if subscriptions[ObjectIdentifier(sender)] != nil {
+        return
     }
-    
-    let reducer: ParentMachine<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>> = ParentMachine(FeatureMachine(FeatureTransition(feature)).outward {
-        [.fromReducer($0)]
-    }.inward {
-        switch $0 {
-        case .fromReducer:
-            return []
-        case .fromModule(let event):
-            return [event]
+
+    // subscribe to a machine merged from modules
+
+    let sourced: [ParentMachine<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>>] = sources.sources.map {
+        $0.machine.outward { [.fromModule($0)] }
+            .inward {
+                switch $0 {
+                case .fromReducer(let event):
+                    return [event]
+                case .fromModule:
+                    return []
+                }
+            }
+    }
+
+    let reducer: ParentMachine<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>> = FeatureMachine(
+        FeatureTransition(feature)
+    ).outward { [.fromReducer($0)] }
+        .inward {
+            switch $0 {
+            case .fromReducer:
+                return []
+            case .fromModule(let event):
+                return [event]
+            }
         }
-    })
-    
+
     // it is important to save it into an array above the "state()" function
-    let machines: Machines<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>> = Machines(moduled.copy(add: reducer))
-    
-    func state() -> FeatureSelfishObject<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>> {
-        FeatureSelfishObject(machines: machines) { _, event in
+    let machines: Machines<ImplCoreEvent<AppEvent>, ImplCoreEvent<AppEvent>> = Machines(sourced.copy(add: reducer))
+
+    func state() -> CoreFeature<ImplCoreEvent<AppEvent>> {
+        FeatureObject(machines: machines) { _, event in
             switch event {
             case .ext:
                 return nil
@@ -60,7 +61,7 @@ internal func _start<
         }
     }
     
-    subscriptions[ObjectIdentifier(sender)] = FeatureMachine(FeatureTransition(state())).subscribe { _,_ in }
+    subscriptions[ObjectIdentifier(sender)] = FeatureMachine(FeatureTransition(state())).subscribe { _, _ in }
 }
 
 internal func _stop(_ sender: AnyObject) {

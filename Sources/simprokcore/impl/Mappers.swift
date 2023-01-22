@@ -11,9 +11,10 @@ import simprokstate
 
 internal extension Automaton {
     
-    func inward<ParentInput>(_ function: @escaping Mapper<ParentInput, [Input]>) -> FeatureMachine<Output, Input, ParentInput, Output> {
-        func feature() -> FeatureSelfishObject<Output, Input, ParentInput, Output> {
-            FeatureSelfishObject(machines: Machines { ParentMachine(self) }) { _, event in
+    func inward<ParentInput>(_ function: @escaping Mapper<ParentInput, [Input]>) -> ParentMachine<ParentInput, Output> {
+        
+        func feature() -> FeatureObject<Output, Input, ParentInput, Output> {
+            FeatureObject(machines: Machines { ParentMachine(self) }) { _, event in
                 switch event {
                 case .int(let value):
                     return FeatureTransition(feature(), effects: .ext(value))
@@ -23,12 +24,17 @@ internal extension Automaton {
             }
         }
         
-        return FeatureMachine(FeatureTransition(feature()))
+        return ParentMachine(
+            FeatureMachine(
+                FeatureTransition(feature())
+            )
+        )
     }
     
-    func outward<ParentOutput>(_ function: @escaping Mapper<Output, [ParentOutput]>) -> FeatureMachine<Output, Input, Input, ParentOutput> {
-        func feature() -> FeatureSelfishObject<Output, Input, Input, ParentOutput> {
-            FeatureSelfishObject(machines: Machines { ParentMachine(self) }) { _, event in
+    func outward<ParentOutput>(_ function: @escaping Mapper<Output, [ParentOutput]>) -> ParentMachine<Input, ParentOutput> {
+        
+        func feature() -> FeatureObject<Output, Input, Input, ParentOutput> {
+            FeatureObject(machines: Machines { ParentMachine(self) }) { _, event in
                 switch event {
                 case .int(let value):
                     return FeatureTransition(feature(), effects: function(value).map { .ext($0) })
@@ -38,6 +44,10 @@ internal extension Automaton {
             }
         }
         
-        return FeatureMachine(FeatureTransition(feature()))
+        return ParentMachine(
+            FeatureMachine(
+                FeatureTransition(feature())
+            )
+        )
     }
 }
