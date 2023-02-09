@@ -9,45 +9,37 @@ import simprokmachine
 import simprokstate
 
 
-internal extension Automaton {
+internal extension Machine {
     
-    func inward<ParentInput>(_ function: @escaping Mapper<ParentInput, [Input]>) -> ParentMachine<ParentInput, Output> {
+    func inward<ParentInput>(_ function: @escaping Mapper<ParentInput, [Input]>) -> Machine<ParentInput, Output> {
         
-        func feature() -> FeatureObject<Output, Input, ParentInput, Output> {
-            FeatureObject(machines: Machines { ParentMachine(self) }) { _, event in
+        func feature() -> Feature<Output, Input, ParentInput, Output> {
+            Feature(machines: [self]) { _, event in
                 switch event {
                 case .int(let value):
-                    return FeatureTransition(feature(), effects: .ext(value))
+                    return Feature.Transition(feature(), effects: .ext(value))
                 case .ext(let value):
-                    return FeatureTransition(feature(), effects: function(value).map { .int($0) })
+                    return Feature.Transition(feature(), effects: function(value).map { .int($0) })
                 }
             }
         }
-        
-        return ParentMachine(
-            FeatureMachine(
-                FeatureTransition(feature())
-            )
-        )
+
+        return Machine<ParentInput, Output>(Feature.Transition(feature()))
     }
     
-    func outward<ParentOutput>(_ function: @escaping Mapper<Output, [ParentOutput]>) -> ParentMachine<Input, ParentOutput> {
+    func outward<ParentOutput>(_ function: @escaping Mapper<Output, [ParentOutput]>) -> Machine<Input, ParentOutput> {
         
-        func feature() -> FeatureObject<Output, Input, Input, ParentOutput> {
-            FeatureObject(machines: Machines { ParentMachine(self) }) { _, event in
+        func feature() -> Feature<Output, Input, Input, ParentOutput> {
+            Feature(machines: [self]) { _, event in
                 switch event {
                 case .int(let value):
-                    return FeatureTransition(feature(), effects: function(value).map { .ext($0) })
+                    return Feature.Transition(feature(), effects: function(value).map { .ext($0) })
                 case .ext(let value):
-                    return FeatureTransition(feature(), effects: .int(value))
+                    return Feature.Transition(feature(), effects: .int(value))
                 }
             }
         }
-        
-        return ParentMachine(
-            FeatureMachine(
-                FeatureTransition(feature())
-            )
-        )
+
+        return Machine<Input, ParentOutput>(Feature.Transition(feature()))
     }
 }

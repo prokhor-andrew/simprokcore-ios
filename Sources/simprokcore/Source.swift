@@ -12,11 +12,11 @@ import simprokstate
 
 public struct Source<AppEvent> {
     
-    internal let machine: ParentMachine<AppEvent, AppEvent>
+    internal let machine: Machine<AppEvent, AppEvent>
     
-    public init<Child: Automaton>(
-        _ machine: Child,
-        @SourceBuilder<AppEvent, Child.Input, Child.Output> build: Supplier<[Gateway<AppEvent, Child.Input, Child.Output>]>
+    public init<Input, Output>(
+        _ machine: Machine<Input, Output>,
+        @SourceBuilder<AppEvent, Input, Output> build: Supplier<[Gateway<AppEvent, Input, Output>]>
     ) {
         let gateways = build()
         

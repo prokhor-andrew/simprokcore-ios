@@ -15,14 +15,20 @@ public struct Gateway<AppEvent, Input, Output> {
     internal let mapOutput: Mapper<Output, [AppEvent]>
 
     internal init<F>(_ machineGate: MachineGate<F, Input, Output>, _ coreGate: CoreGate<AppEvent, F>) {
-        self.mapInput = {
-            coreGate.mapInput($0).flatMap {
-                machineGate.mapInput($0)
+        mapInput = {
+            if let result = coreGate.mapInput($0)  {
+                return machineGate.mapInput(result)
+            } else {
+                return []
             }
         }
-        self.mapOutput = {
+        mapOutput = {
             machineGate.mapOutput($0).flatMap {
-                coreGate.mapOutput($0)
+                if let result = coreGate.mapOutput($0) {
+                    return [result]
+                } else {
+                    return []
+                }
             }
         }
     }

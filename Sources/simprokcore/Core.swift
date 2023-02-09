@@ -13,13 +13,13 @@ public protocol Core: AnyObject {
     
     var sources: Sources<AppEvent> { get }
     
-    var feature: CoreFeature<AppEvent> { get }
+    var story: Story<AppEvent> { get }
 }
 
 public extension Core {
     
     func start() {
-        _start(sender: self, feature: feature, sources: sources)
+        _start(sender: self, story: story, sources: sources)
     }
     
     func stop() {
