@@ -14,32 +14,32 @@ internal extension Machine {
     func inward<ParentInput>(_ function: @escaping Mapper<ParentInput, [Input]>) -> Machine<ParentInput, Output> {
         
         func feature() -> Feature<Output, Input, ParentInput, Output> {
-            Feature(machines: [self]) { _, event in
+            Feature([self]) { _, event in
                 switch event {
                 case .int(let value):
-                    return Feature.Transition(feature(), effects: .ext(value))
+                    return FeatureTransition(feature(), effects: .ext(value))
                 case .ext(let value):
-                    return Feature.Transition(feature(), effects: function(value).map { .int($0) })
+                    return FeatureTransition(feature(), effects: function(value).map { .int($0) })
                 }
             }
         }
 
-        return Machine<ParentInput, Output>(Feature.Transition(feature()))
+        return Machine<ParentInput, Output>(FeatureTransition(feature()))
     }
     
     func outward<ParentOutput>(_ function: @escaping Mapper<Output, [ParentOutput]>) -> Machine<Input, ParentOutput> {
         
         func feature() -> Feature<Output, Input, Input, ParentOutput> {
-            Feature(machines: [self]) { _, event in
+            Feature([self]) { _, event in
                 switch event {
                 case .int(let value):
-                    return Feature.Transition(feature(), effects: function(value).map { .ext($0) })
+                    return FeatureTransition(feature(), effects: function(value).map { .ext($0) })
                 case .ext(let value):
-                    return Feature.Transition(feature(), effects: .int(value))
+                    return FeatureTransition(feature(), effects: .int(value))
                 }
             }
         }
 
-        return Machine<Input, ParentOutput>(Feature.Transition(feature()))
+        return Machine<Input, ParentOutput>(FeatureTransition(feature()))
     }
 }

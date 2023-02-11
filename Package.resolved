@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/simprok-dev/simprokstate-ios.git",
       "state" : {
-        "revision" : "270f3a50407429184821a8ca2de33e4712c98335",
-        "version" : "1.2.0"
+        "revision" : "e52d140559da59fef1a9f4966289f89807d97e88",
+        "version" : "1.2.1"
       }
     }
   ],

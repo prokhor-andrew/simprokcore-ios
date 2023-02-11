@@ -14,12 +14,11 @@ internal func _start<AppEvent>(
         return
     }
 
-    let feature: Feature<AppEvent, AppEvent, Void, Void> = IntTriggerIntEffect(
-            story,
-            machines: sources.sources.map { $0.machine }
+    let feature: Feature<AppEvent, AppEvent, Void, Void> = story.asIntTriggerIntEffect(
+            Set(sources.sources.map { $0.machine })
     )
 
-    subscriptions[ObjectIdentifier(sender)] = Machine(Feature.Transition(feature)).subscribe { _, _ in }
+    subscriptions[ObjectIdentifier(sender)] = Machine(FeatureTransition(feature)).subscribe { _, _ in }
 }
 
 internal func _stop(_ sender: AnyObject) {
