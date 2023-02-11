@@ -15,7 +15,7 @@ internal func _start<AppEvent>(
     }
 
     let feature: Feature<AppEvent, AppEvent, Void, Void> = story.asIntTriggerIntEffect(
-            Set(sources.sources.map { $0.machine })
+            SetOfMachines(Set(sources.sources.map { $0.machine }))
     )
 
     subscriptions[ObjectIdentifier(sender)] = Machine(FeatureTransition(feature)).subscribe { _, _ in }
