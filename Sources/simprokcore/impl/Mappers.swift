@@ -14,7 +14,7 @@ internal extension Machine {
     func inward<ParentInput>(_ function: @escaping Mapper<ParentInput, [Input]>) -> Machine<ParentInput, Output> {
         
         func feature() -> Feature<Output, Input, ParentInput, Output> {
-            Feature([self]) { _, event in
+            Feature([self]) { _, _, event in
                 switch event {
                 case .int(let value):
                     return FeatureTransition(feature(), effects: .ext(value))
@@ -30,7 +30,7 @@ internal extension Machine {
     func outward<ParentOutput>(_ function: @escaping Mapper<Output, [ParentOutput]>) -> Machine<Input, ParentOutput> {
         
         func feature() -> Feature<Output, Input, Input, ParentOutput> {
-            Feature([self]) { _, event in
+            Feature([self]) { _, _, event in
                 switch event {
                 case .int(let value):
                     return FeatureTransition(feature(), effects: function(value).map { .ext($0) })
