@@ -8,6 +8,7 @@ internal func _start<AppEvent>(
         story: Story<AppEvent>,
         sources: Sources<AppEvent>
 ) {
+
     // check if there is already a subscription for this Core
 
     if subscriptions[ObjectIdentifier(sender)] != nil {
@@ -15,12 +16,44 @@ internal func _start<AppEvent>(
     }
 
     let feature: Feature<AppEvent, AppEvent, Void, Void> = story.asIntTriggerIntEffect(
-            SetOfMachines(Set(sources.sources.map { $0.machine }))
+            SetOfMachines(Set(sources.sources.map {
+                $0.machine
+            }))
     )
 
-    subscriptions[ObjectIdentifier(sender)] = Machine(FeatureTransition(feature)).subscribe { _, _ in }
+    subscriptions[ObjectIdentifier(sender)] = Machine(FeatureTransition(feature)).subscribe { _, _ in
+    }
 }
 
 internal func _stop(_ sender: AnyObject) {
     subscriptions.removeValue(forKey: ObjectIdentifier(sender))
+}
+
+fileprivate extension Story {
+
+    func asIntTriggerIntEffect<ExtTrigger, ExtEffect, Machines: FeatureMachines>(
+            _ machines: Machines
+    ) -> Feature<Event, Event, ExtTrigger, ExtEffect> where Machines.Trigger == Event, Machines.Effect == Event {
+        if let transit {
+            let feature: Feature<Event, Event, ExtTrigger, ExtEffect> = Feature.create(machines) { machines, event in
+                switch event {
+                case .ext:
+                    return FeatureTransition(feature)
+                case .int(let value):
+                    if let new = transit(value) {
+                        return FeatureTransition(
+                                new.asIntTriggerIntEffect(machines),
+                                effects: .int(value)
+                        )
+                    } else {
+                        return FeatureTransition(feature)
+                    }
+                }
+            }
+
+            return feature
+        } else {
+            return .finale(SetOfMachines())
+        }
+    }
 }
