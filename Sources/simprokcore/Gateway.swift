@@ -11,10 +11,18 @@ import simprokmachine
 
 public struct Gateway<AppEvent, Input, Output> {
 
-    internal let mapInput: Mapper<AppEvent, [Input]>
-    internal let mapOutput: Mapper<Output, [AppEvent]>
+    public let mapInput: Mapper<AppEvent, [Input]>
+    public let mapOutput: Mapper<Output, [AppEvent]>
 
-    internal init<F>(_ machineGate: MachineGate<F, Input, Output>, _ coreGate: CoreGate<AppEvent, F>) {
+    public init(
+        mapInput: @escaping Mapper<AppEvent, [Input]>,
+        mapOutput: @escaping Mapper<Output, [AppEvent]>
+    ) {
+        self.mapInput = mapInput
+        self.mapOutput = mapOutput
+    }
+    
+    public init<F>(_ machineGate: MachineGate<F, Input, Output>, _ coreGate: CoreGate<AppEvent, F>) {
         mapInput = {
             if let result = coreGate.mapInput($0)  {
                 return machineGate.mapInput(result)
@@ -32,17 +40,6 @@ public struct Gateway<AppEvent, Input, Output> {
             }
         }
     }
-}
-
-
-infix operator &
-
-public func &<F, AppEvent, Input, Output>(lhs: MachineGate<F, Input, Output>, rhs: CoreGate<AppEvent, F>) -> Gateway<AppEvent, Input, Output> {
-    Gateway(lhs, rhs)
-}
-
-public func &<F, AppEvent, Input, Output>(lhs: CoreGate<AppEvent, F>, rhs: MachineGate<F, Input, Output>) -> Gateway<AppEvent, Input, Output> {
-    rhs & lhs
 }
 
 prefix operator ^

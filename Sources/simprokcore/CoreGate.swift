@@ -10,23 +10,14 @@ import simprokmachine
 
 public struct CoreGate<AppEvent, Feature> {
     
-    private let _mapInput: Mapper<AppEvent, Feature?>
-    private let _mapOutput: Mapper<Feature, AppEvent?>
+    public let mapInput: Mapper<AppEvent, Feature?>
+    public let mapOutput: Mapper<Feature, AppEvent?>
     
     public init(
         mapInput: @escaping Mapper<AppEvent, Feature?>,
         mapOutput: @escaping Mapper<Feature, AppEvent?>
     ) {
-        self._mapInput = mapInput
-        self._mapOutput = mapOutput
-    }
-    
-    public func mapInput(_ event: AppEvent) -> Feature? {
-        _mapInput(event)
-    }
-    
-    
-    public func mapOutput(_ feature: Feature) -> AppEvent? {
-        _mapOutput(feature)
+        self.mapInput = mapInput
+        self.mapOutput = mapOutput
     }
 }

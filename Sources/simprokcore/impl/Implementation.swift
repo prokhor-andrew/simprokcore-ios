@@ -35,10 +35,10 @@ fileprivate extension Story {
             _ machines: Machines
     ) -> Feature<Event, Event, ExtTrigger, ExtEffect> where Machines.Trigger == Event, Machines.Effect == Event {
         if let transit {
-            let feature: Feature<Event, Event, ExtTrigger, ExtEffect> = Feature.create(machines) { machines, event in
+            return Feature.create(machines) { machines, event in
                 switch event {
                 case .ext:
-                    return FeatureTransition(feature)
+                    return nil
                 case .int(let value):
                     if let new = transit(value) {
                         return FeatureTransition(
@@ -46,14 +46,12 @@ fileprivate extension Story {
                                 effects: .int(value)
                         )
                     } else {
-                        return FeatureTransition(feature)
+                        return nil
                     }
                 }
             }
-
-            return feature
         } else {
-            return .finale(SetOfMachines())
+            return .finale(machines)
         }
     }
 }
