@@ -22,7 +22,7 @@ public struct Gateway<AppEvent, Input, Output> {
         self.mapOutput = mapOutput
     }
     
-    public init<F>(_ machineGate: MachineGate<F, Input, Output>, _ coreGate: CoreGate<AppEvent, F>) {
+    public init<F>(_ coreGate: CoreGate<AppEvent, F>, _ machineGate: MachineGate<F, Input, Output>) {
         mapInput = {
             if let result = coreGate.mapInput($0)  {
                 return machineGate.mapInput(result)
@@ -47,5 +47,5 @@ prefix operator ^
 public prefix func ^<F: CoreGateProvider, Input, Output>(
         machineGate: MachineGate<F, Input, Output>
 ) -> Gateway<F.Event, Input, Output> {
-    Gateway(machineGate, F.gate)
+    Gateway(F.gate, machineGate)
 }
