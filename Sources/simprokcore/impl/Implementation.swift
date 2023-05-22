@@ -1,6 +1,8 @@
+import Foundation
 import simprokstate
 import simprokmachine
 
+fileprivate let queue = DispatchQueue(label: "multicorequeue", qos: .userInteractive)
 fileprivate var subscriptions: [ObjectIdentifier: AnyObject] = [:]
 
 internal func _start<AppEvent>(
@@ -8,25 +10,27 @@ internal func _start<AppEvent>(
         story: Story<AppEvent>,
         sources: Sources<AppEvent>
 ) {
+    queue.sync {
+        // check if there is already a subscription for this Core
 
-    // check if there is already a subscription for this Core
+        if subscriptions[ObjectIdentifier(sender)] != nil {
+            return
+        }
 
-    if subscriptions[ObjectIdentifier(sender)] != nil {
-        return
-    }
-
-    let feature: Feature<AppEvent, AppEvent, Void, Void> = story.asIntTriggerIntEffect(
+        let feature: Feature<AppEvent, AppEvent, Void, Void> = story.asIntTriggerIntEffect(
             SetOfMachines(Set(sources.sources.map {
                 $0.machine
             }))
-    )
-
-    subscriptions[ObjectIdentifier(sender)] = Machine(FeatureTransition(feature)).subscribe { _, _ in
+        )
+        
+        subscriptions[ObjectIdentifier(sender)] = Machine(FeatureTransition(feature)).started { _, _ in }
     }
 }
 
 internal func _stop(_ sender: AnyObject) {
-    subscriptions.removeValue(forKey: ObjectIdentifier(sender))
+    queue.sync {
+        _ = subscriptions.removeValue(forKey: ObjectIdentifier(sender))
+    }
 }
 
 fileprivate extension Story {
