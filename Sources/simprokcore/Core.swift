@@ -24,7 +24,7 @@ public final class Core<AppEvent> {
         self.story = story
     }
     
-    func start() {
+    public func start() {
         let sources = sources()
         let story = story()
         
@@ -35,7 +35,7 @@ public final class Core<AppEvent> {
         process = Machine { feature }.run { _ in }
     }
     
-    func stop() {
+    public func stop() {
         process = nil
     }
 }
