@@ -6,7 +6,6 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 //
 
-
 public protocol CoreGateProvider {
     associatedtype Event
 

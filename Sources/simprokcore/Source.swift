@@ -7,8 +7,6 @@
 //
 
 import simprokmachine
-import simprokstate
-
 
 public struct Source<AppEvent> {
     
@@ -16,7 +14,7 @@ public struct Source<AppEvent> {
     
     public init<Input, Output>(
         _ machine: Machine<Input, Output>,
-        @SourceBuilder<AppEvent, Input, Output> build: Supplier<[Gateway<AppEvent, Input, Output>]>
+        @SourceBuilder<AppEvent, Input, Output> build: () -> [Gateway<AppEvent, Input, Output>]
     ) {
         let gateways = build()
         

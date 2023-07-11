@@ -11,8 +11,9 @@ import simprokstate
 
 internal extension Machine {
     
-    func inward<ParentInput>(_ function: @escaping Mapper<ParentInput, [Input]>) -> Machine<ParentInput, Output> {
+    func inward<ParentInput>(_ function: @escaping (ParentInput) -> [Input]) -> Machine<ParentInput, Output> {
         
+        @Sendable
         func feature() -> Feature<Output, Input, ParentInput, Output> {
             Feature.create(SetOfMachines(self)) { _, event in
                 switch event {
@@ -24,11 +25,12 @@ internal extension Machine {
             }
         }
 
-        return Machine<ParentInput, Output>(FeatureTransition(feature()))
+        return Machine<ParentInput, Output>(feature)
     }
     
-    func outward<ParentOutput>(_ function: @escaping Mapper<Output, [ParentOutput]>) -> Machine<Input, ParentOutput> {
+    func outward<ParentOutput>(_ function: @escaping (Output) -> [ParentOutput]) -> Machine<Input, ParentOutput> {
         
+        @Sendable
         func feature() -> Feature<Output, Input, Input, ParentOutput> {
             Feature.create(SetOfMachines(self)) { _, event in
                 switch event {
@@ -40,6 +42,6 @@ internal extension Machine {
             }
         }
 
-        return Machine<Input, ParentOutput>(FeatureTransition(feature()))
+        return Machine<Input, ParentOutput>(feature)
     }
 }

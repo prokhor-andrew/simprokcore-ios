@@ -6,17 +6,15 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 //
 
-import simprokmachine
-
 
 public struct Gateway<AppEvent, Input, Output> {
 
-    public let mapInput: Mapper<AppEvent, [Input]>
-    public let mapOutput: Mapper<Output, [AppEvent]>
+    public let mapInput: (AppEvent) -> [Input]
+    public let mapOutput: (Output) -> [AppEvent]
 
     public init(
-        mapInput: @escaping Mapper<AppEvent, [Input]>,
-        mapOutput: @escaping Mapper<Output, [AppEvent]>
+        mapInput: @escaping (AppEvent) -> [Input],
+        mapOutput: @escaping (Output) -> [AppEvent]
     ) {
         self.mapInput = mapInput
         self.mapOutput = mapOutput

@@ -6,8 +6,6 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 //
 
-import simprokmachine
-
 
 public struct Sources<AppEvent> {
  
@@ -17,7 +15,7 @@ public struct Sources<AppEvent> {
         self.sources = array
     }
     
-    public init(@SourcesBuilder<AppEvent> _ build: Supplier<[Source<AppEvent>]>) {
+    public init(@SourcesBuilder<AppEvent> _ build: () -> [Source<AppEvent>]) {
         self.init(build())
     }
 }

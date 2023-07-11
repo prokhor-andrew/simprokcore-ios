@@ -6,23 +6,36 @@
 //  Copyright (c) 2022 simprok. All rights reserved.
 //
 
+import simprokmachine
 import simprokstate
 
-public protocol Core: AnyObject {
-    associatedtype AppEvent
+public final class Core<AppEvent> {
     
-    var sources: Sources<AppEvent> { get }
+    private let sources: () -> Sources<AppEvent>
+    private let story: () -> Story<AppEvent>
     
-    var story: Story<AppEvent> { get }
-}
-
-public extension Core {
+    private var process: Process<Void, Void>?
+    
+    public init(
+        sources: @autoclosure @escaping () -> Sources<AppEvent>,
+        story: @autoclosure @escaping () -> Story<AppEvent>
+    ) {
+        self.sources = sources
+        self.story = story
+    }
     
     func start() {
-        _start(sender: self, story: story, sources: sources)
+        let sources = sources()
+        let story = story()
+        
+        let feature: Feature<AppEvent, AppEvent, Void, Void> = story.asIntTriggerIntEffect(
+            SetOfMachines(Set(sources.sources.map { $0.machine }))
+        )
+        
+        process = Machine { feature }.run { _ in }
     }
     
     func stop() {
-        _stop(self)
+        process = nil
     }
 }
