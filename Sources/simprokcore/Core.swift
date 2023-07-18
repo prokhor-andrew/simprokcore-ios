@@ -28,11 +28,11 @@ public final class Core<AppEvent> {
         let sources = sources()
         let story = story()
         
-        let feature: Feature<AppEvent, AppEvent, Void, Void> = story.asIntTriggerIntEffect(
-            SetOfMachines(Set(sources.sources.map { $0.machine }))
-        )
-        
-        process = Machine { feature }.run { _ in }
+        process = Machine {
+            story.asIntTriggerIntEffect(
+                SetOfMachines(Set(sources.sources.map { $0.machine }))
+            )
+        }.run { _ in }
     }
     
     public func stop() {
