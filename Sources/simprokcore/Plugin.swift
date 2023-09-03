@@ -1,5 +1,5 @@
 //
-//  Source.swift
+//  Plugin.swift
 //  simprokcore
 //
 //  Created by Andrey Prokhorenko on 01.12.2021.
@@ -7,14 +7,15 @@
 //
 
 import simprokmachine
+import simprokstate
 
-public struct Source<AppEvent> {
+public struct Plugin {
     
-    internal let machine: Machine<AppEvent, AppEvent>
+    internal let machine: Machine<AnyStoryEvent, AnyStoryEvent>
     
     public init<Input, Output>(
         _ machine: Machine<Input, Output>,
-        @SourceBuilder<AppEvent, Input, Output> build: () -> [Gateway<AppEvent, Input, Output>]
+        @PluginBuilder<Input, Output> build: () -> [Gateway<Input, Output>]
     ) {
         let gateways = build()
         

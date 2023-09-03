@@ -9,28 +9,28 @@
 import simprokmachine
 import simprokstate
 
-public final class Core<AppEvent> {
+public final class Core {
     
-    private let sources: () -> Sources<AppEvent>
-    private let story: () -> Story<AppEvent>
+    private let plugins: () -> [Plugin]
+    private let story: () -> Story<AnyStoryEvent>
     
     private var process: Process<Void, Void>?
     
     public init(
-        sources: @autoclosure @escaping () -> Sources<AppEvent>,
-        story: @autoclosure @escaping () -> Story<AppEvent>
+        _ story: @autoclosure @escaping () -> Story<AnyStoryEvent>,
+        @PluginsBuilder plugins: @escaping () -> [Plugin]
     ) {
-        self.sources = sources
+        self.plugins = plugins
         self.story = story
     }
     
     public func start() {
-        let sources = sources()
+        let plugins = plugins()
         let story = story()
         
         process = Machine {
             story.asIntTriggerIntEffect(
-                SetOfMachines(Set(sources.sources.map { $0.machine }))
+                SetOfMachines(Set(plugins.map { $0.machine }))
             )
         }.run { _ in }
     }
