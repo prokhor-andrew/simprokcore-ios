@@ -9,14 +9,14 @@
 import simprokstate
 
 
-public struct Gateway<Input, Output> {
+public struct Gateway<Input, Output>: Sendable {
 
-    internal let mapInput: (AnyStoryEvent) -> [Input]
-    internal let mapOutput: (Output) -> [AnyStoryEvent]
+    internal let mapInput: @Sendable (AnyStoryEvent) -> [Input]
+    internal let mapOutput: @Sendable (Output) -> [AnyStoryEvent]
 
     internal init(
-        mapInput: @escaping (AnyStoryEvent) -> [Input],
-        mapOutput: @escaping (Output) -> [AnyStoryEvent]
+        mapInput: @escaping @Sendable (AnyStoryEvent) -> [Input],
+        mapOutput: @escaping @Sendable (Output) -> [AnyStoryEvent]
     ) {
         
         self.mapInput = mapInput

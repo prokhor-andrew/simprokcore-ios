@@ -9,7 +9,7 @@
 import simprokmachine
 import simprokstate
 
-public struct Plugin {
+public struct Plugin: Sendable {
     
     internal let machine: Machine<AnyStoryEvent, AnyStoryEvent>
     

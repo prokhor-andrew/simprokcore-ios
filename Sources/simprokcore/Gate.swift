@@ -7,14 +7,14 @@
 
 import simprokstate
 
-public struct Gate<Feature: AnyStoryEvent, Input, Output> {
+public struct Gate<Feature: AnyStoryEvent, Input, Output>: Sendable {
 
-    private let mapInput: (Feature) -> [Input]
-    private let mapOutput: (Output) -> [Feature]
+    private let mapInput: @Sendable (Feature) -> [Input]
+    private let mapOutput: @Sendable (Output) -> [Feature]
     
     public init(
-        mapInput: @escaping (Feature) -> [Input],
-        mapOutput: @escaping (Output) -> [Feature]
+        mapInput: @escaping @Sendable (Feature) -> [Input],
+        mapOutput: @escaping @Sendable (Output) -> [Feature]
     ) {
         self.mapInput = mapInput
         self.mapOutput = mapOutput

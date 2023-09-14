@@ -8,7 +8,7 @@
 
 
 @resultBuilder
-public struct PluginBuilder<Input, Output> {
+public struct PluginBuilder<Input, Output>: Sendable {
 
     private init() {
     }
