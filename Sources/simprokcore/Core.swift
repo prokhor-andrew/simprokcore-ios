@@ -11,26 +11,26 @@ import simprokstate
 
 public final class Core {
     
-    private let plugins: () -> [Plugin]
-    private let story: () -> Story<AnyStoryEvent>
+    private let machines: () -> [AnyMachine]
+    private let story: () -> AnyStory
     
     private var process: Process<Void, Void>?
     
     public init(
-        _ story: @autoclosure @escaping () -> Story<AnyStoryEvent>,
-        @PluginsBuilder plugins: @escaping () -> [Plugin]
+        story: @autoclosure @escaping () -> AnyStory,
+        machines: @autoclosure @escaping () -> [AnyMachine]
     ) {
-        self.plugins = plugins
+        self.machines = machines
         self.story = story
     }
     
     public func start() {
-        let plugins = plugins()
+        let machines = machines()
         let story = story()
         
         process = Machine {
             story.asIntTriggerIntEffect(
-                SetOfMachines(Set(plugins.map { $0.machine }))
+                SetOfMachines(Set(machines))
             )
         }.run { _ in }
     }
