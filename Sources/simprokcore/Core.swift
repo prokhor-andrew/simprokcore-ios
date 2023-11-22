@@ -24,15 +24,19 @@ public final class Core {
         self.story = story
     }
     
-    public func start() {
+    public func start(logger: @escaping (String) -> Void) {
         let machines = machines()
         let story = story()
         
-        process = Machine {
-            story.asIntTriggerIntEffect(
+        process = Machine { logger in
+            story.doOn { event, guarded in
+                logger("\(guarded ? "__ guarded __" : "__") \(event) __")
+            }
+            .asIntTriggerIntEffect(
                 SetOfMachines(Set(machines))
             )
-        }.run { _ in }
+        }.run { _ in } logger: { logger($0) }
+
     }
     
     public func stop() {
