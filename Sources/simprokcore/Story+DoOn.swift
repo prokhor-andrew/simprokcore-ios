@@ -13,16 +13,12 @@ internal extension Story {
     func doOn(
         update: @escaping (Event, Bool) -> Void
     ) -> Story<Event> {
-        if let transit {
-            return Story<Event>.create { event in
-                let new = transit(event)
-                
-                update(event, new == nil)
-                
-                return new?.doOn(update: update)
-            }
-        } else {
-            return .finale()
+        Story { event in
+            let new = transit(event)
+            
+            update(event, new == nil)
+            
+            return new?.doOn(update: update)
         }
     }
 }
