@@ -28,8 +28,8 @@ public final class Core {
         let machines = machines()
         let story = story()
         
-        process = Machine { logger in
-            story.doOn { event, guarded in
+        process = Machine { 
+            story.doOn { event, guarded, logger in
                 logger("\(guarded ? "__ guarded __" : "__") \(event) __")
             }
             .asIntTriggerIntEffect(
