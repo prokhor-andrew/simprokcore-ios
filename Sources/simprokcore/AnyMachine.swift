@@ -7,4 +7,4 @@
 
 import simprokmachine
 
-public typealias AnyMachine<Message> = Machine<AnyEvent, AnyEvent, Message>
+public typealias AnyMachine = Machine<AnyEvent, AnyEvent>

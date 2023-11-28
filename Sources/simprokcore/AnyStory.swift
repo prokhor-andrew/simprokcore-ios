@@ -7,4 +7,4 @@
 
 import simprokstate
 
-public typealias AnyStory<Message> = Story<AnyEvent, Message>
+public typealias AnyStory = Story<AnyEvent>

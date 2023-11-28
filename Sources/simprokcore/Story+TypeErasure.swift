@@ -9,7 +9,7 @@ import simprokstate
 
 public extension Story where Event: AnyEvent {
     
-    func erase() -> AnyStory<Message> {
+    func erase() -> AnyStory {
         AnyStory { event, logger in
             if let casted = event as? Event {
                 return transit(casted, logger)?.erase()
@@ -22,8 +22,8 @@ public extension Story where Event: AnyEvent {
 
 prefix operator ^
 
-public prefix func ^<Event: AnyEvent, Message>(
-    story: Story<Event, Message>
-) -> AnyStory<Message> {
+public prefix func ^<Event: AnyEvent>(
+    story: Story<Event>
+) -> AnyStory {
     story.erase()
 }
