@@ -10,9 +10,9 @@ import simprokstate
 public extension Story where Event: AnyEvent {
     
     func erase() -> AnyStory {
-        AnyStory { event, logger in
+        AnyStory { extras, event in
             if let casted = event as? Event {
-                return transit(casted, logger)?.erase()
+                return transit(casted, extras.logger)?.erase()
             } else {
                 return nil
             }
