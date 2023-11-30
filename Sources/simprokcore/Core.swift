@@ -32,7 +32,7 @@ public final class Core {
         let story = story()
         let handlers = handlers()
         
-        process = Machine {
+        process = Machine { id in
             story.asIntTriggerIntEffect(
                 SetOfMachines(Set(machines))
             )
