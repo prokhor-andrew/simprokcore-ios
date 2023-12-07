@@ -36,10 +36,9 @@ public final class Core {
             story.asIntTriggerIntEffect(
                 SetOfMachines(Set(machines))
             )
-        }.run { _ in } logger: { loggable in
+        }.run { loggable in
             handlers.forEach { $0.handler(loggable) }
-        }
-
+        } onConsume: { _ in }
     }
     
     public func stop() {
