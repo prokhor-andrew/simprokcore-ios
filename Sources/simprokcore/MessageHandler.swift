@@ -7,15 +7,15 @@
 
 import simprokmachine
 
-public struct MessageHandler {
+public struct MessageHandler: Sendable {
     
-    public let handler: (Loggable) -> Void
+    public let handler: @Sendable (Loggable) -> Void
     
-    public init<Object>(_ object: Object, handler: @escaping (Object, Loggable) -> Void) {
+    public init<Object: Sendable>(_ object: Object, handler: @escaping @Sendable (Object, Loggable) -> Void) {
         self.handler = { handler(object, $0) }
     }
     
-    public init(handler: @escaping (Loggable) -> Void) {
+    public init(handler: @escaping @Sendable (Loggable) -> Void) {
         self.handler = handler
     }
 }

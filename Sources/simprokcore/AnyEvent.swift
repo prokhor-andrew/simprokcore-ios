@@ -6,6 +6,6 @@
 //
 
 
-public protocol AnyEvent {
+public protocol AnyEvent: Sendable {
     
 }

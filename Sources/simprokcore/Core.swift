@@ -9,18 +9,19 @@
 import simprokmachine
 import simprokstate
 
-public final class Core {
+@MainActor
+public final class Core: Sendable {
     
-    private let story: () -> AnyStory
-    private let machines: () -> [AnyMachine]
-    private let handlers: () -> [MessageHandler]
+    private let story: @Sendable () -> AnyStory
+    private let machines: @Sendable () -> [AnyMachine]
+    private let handlers: @Sendable () -> [MessageHandler]
     
     private var process: Process<Void, Void>?
     
     public init(
-        story: @autoclosure @escaping () -> AnyStory,
-        machines: @autoclosure @escaping () -> [AnyMachine],
-        handlers: @autoclosure @escaping () -> [MessageHandler]
+        story: @autoclosure @Sendable @escaping () -> AnyStory,
+        machines: @autoclosure @Sendable @escaping () -> [AnyMachine],
+        handlers: @autoclosure @Sendable @escaping () -> [MessageHandler]
     ) {
         self.story = story
         self.machines = machines
