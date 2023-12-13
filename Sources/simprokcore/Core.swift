@@ -14,35 +14,38 @@ public final class Core: Sendable {
     
     private let story: @Sendable () -> AnyStory
     private let machines: @Sendable () -> [AnyMachine]
-    private let handlers: @Sendable () -> [MessageHandler]
+    private let loggers: @Sendable () -> [MachineLogger]
     
-    private var process: Process<Void, Void>?
+    private var process: Process<Void>?
     
     public init(
         story: @autoclosure @Sendable @escaping () -> AnyStory,
         machines: @autoclosure @Sendable @escaping () -> [AnyMachine],
-        handlers: @autoclosure @Sendable @escaping () -> [MessageHandler]
+        loggers: @autoclosure @Sendable @escaping () -> [MachineLogger]
     ) {
         self.story = story
         self.machines = machines
-        self.handlers = handlers
+        self.loggers = loggers
     }
     
     public func start() {
         let machines = machines()
         let story = story()
-        let handlers = handlers()
+        let loggers = loggers()
         
-        process = Machine { id in
+        process = Machine<Void, Void> { id in
             story.asIntTriggerIntEffect(
                 SetOfMachines(Set(machines))
             )
-        }.run { loggable in
-            handlers.forEach { $0.handler(loggable) }
-        } onConsume: { _ in }
+        }.run(logger: MachineLogger { loggable in
+            loggers.forEach { $0.log(loggable) }
+        }) { _,_ in
+            
+        }
     }
     
     public func stop() {
+        process?.cancel()
         process = nil
     }
 }
