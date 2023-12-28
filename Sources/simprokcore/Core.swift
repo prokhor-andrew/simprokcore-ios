@@ -10,17 +10,17 @@ import simprokmachine
 import simprokstate
 
 @MainActor
-public final class Core: Sendable {
+public final class Core<State: Sendable, Event: Sendable>: Sendable {
     
-    private let story: @Sendable () -> AnyStory
-    private let machines: @Sendable () -> [AnyMachine]
+    private let story: @Sendable () -> Story<State, Event>
+    private let machines: @Sendable () -> Set<Machine<(State, Event), Event>>
     private let loggers: @Sendable () -> [MachineLogger]
     
     private var process: Process<Void>?
     
     public init(
-        story: @autoclosure @Sendable @escaping () -> AnyStory,
-        machines: @autoclosure @Sendable @escaping () -> [AnyMachine],
+        story: @autoclosure @Sendable @escaping () -> Story<State, Event>,
+        machines: @autoclosure @Sendable @escaping () -> Set<Machine<(State, Event), Event>>,
         loggers: @autoclosure @Sendable @escaping () -> [MachineLogger]
     ) {
         self.story = story
@@ -33,13 +33,25 @@ public final class Core: Sendable {
         let story = story()
         let loggers = loggers()
         
-        process = Machine<Void, Void> { id in
-            story.asIntTriggerIntEffect(
-                SetOfMachines(Set(machines))
-            )
+        process = Machine<Void, Void> { _,_ -> Feature<State, Event, (State, Event), Void, Void> in
+            @Sendable
+            func scene(_ story: Story<State, Event>) -> Scene<State, Event, (State, Event)> {
+                Scene(payload: story.payload) { extras, trigger in
+                    if let newStory = story.transit(trigger, extras.machineId, extras.logger) {
+                        SceneTransition(
+                            scene(newStory),
+                            effects: [(newStory.payload, trigger)]
+                        )
+                    } else {
+                        SceneTransition(scene(story))
+                    }
+                }
+            }
+            
+            return scene(story).asIntTriggerIntEffect(machines)
         }.run(logger: MachineLogger { loggable in
-            loggers.forEach { $0.log(loggable) }
-        }) { _,_ in
+            loggers.forEach { logger in logger.log(loggable) }
+        }) { _ in
             
         }
     }
@@ -49,3 +61,4 @@ public final class Core: Sendable {
         process = nil
     }
 }
+
