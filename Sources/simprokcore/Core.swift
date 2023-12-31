@@ -10,18 +10,18 @@ import simprokmachine
 import simprokstate
 
 @MainActor
-public final class Core<State: Sendable, Event: Sendable>: Sendable {
+public final class Core<State: Sendable, Event: Sendable, Loggable: Sendable>: Sendable {
     
-    private let story: @Sendable () -> Story<State, Event>
-    private let machines: @Sendable () -> Set<Machine<(State, Event), Event>>
-    private let loggers: @Sendable () -> [MachineLogger]
+    private let story: @Sendable () -> Story<State, Event, Loggable>
+    private let machines: @Sendable () -> Set<Machine<(State, Event), Event, Loggable>>
+    private let loggers: @Sendable () -> [MachineLogger<Loggable>]
     
     private var process: Process<Void>?
     
     public init(
-        story: @autoclosure @Sendable @escaping () -> Story<State, Event>,
-        machines: @autoclosure @Sendable @escaping () -> Set<Machine<(State, Event), Event>>,
-        loggers: @autoclosure @Sendable @escaping () -> [MachineLogger]
+        story: @autoclosure @Sendable @escaping () -> Story<State, Event, Loggable>,
+        machines: @autoclosure @Sendable @escaping () -> Set<Machine<(State, Event), Event, Loggable>>,
+        loggers: @autoclosure @Sendable @escaping () -> [MachineLogger<Loggable>]
     ) {
         self.story = story
         self.machines = machines
@@ -33,9 +33,9 @@ public final class Core<State: Sendable, Event: Sendable>: Sendable {
         let story = story()
         let loggers = loggers()
         
-        process = Machine<Void, Void> { _,_ -> Feature<State, Event, (State, Event), Void, Void> in
+        process = Machine<Void, Void, Loggable> { _,_ -> Feature<State, Event, (State, Event), Void, Void, Loggable> in
             @Sendable
-            func scene(_ story: Story<State, Event>) -> Scene<State, Event, (State, Event)> {
+            func scene(_ story: Story<State, Event, Loggable>) -> Scene<State, Event, (State, Event), Loggable> {
                 Scene(payload: story.payload) { extras, trigger in
                     if let newStory = story.transit(trigger, extras.machineId, extras.logger) {
                         SceneTransition(
